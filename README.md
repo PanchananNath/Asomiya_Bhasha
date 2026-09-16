@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # অসমীয়া ভাষা (Asomiya Bhasha)
 
 অসমীয়া নাম, কীৱৰ্ড আৰু সংখ্যাৰে লিখিব পৰা এটা সৰু শিক্ষামূলক programming language prototype। Runtime-টো Node.js-ত চলে আৰু lexer, parser, AST আৰু interpreter-ৰে গঠিত।
@@ -46,7 +45,7 @@ npm --version
 Repository clone কৰি project folder-ত যাওক:
 
 ```powershell
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/PanchananNath/Asomiya_Bhasha.git
 cd asomiya-bhasha
 ```
 
@@ -98,7 +97,7 @@ npm run web
 The following sequence reproduces the current project on a new machine:
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/PanchananNath/Asomiya_Bhasha.git
 cd asomiya-bhasha
 npm ci
 npm test
@@ -204,7 +203,7 @@ git init
 git add .
 git commit -m "Initial Asomiya Bhasha interpreter"
 git branch -M main
-git remote add origin <YOUR_GITHUB_REPOSITORY_URL>
+git remote add origin https://github.com/PanchananNath/Asomiya_Bhasha.git
 git push -u origin main
 ```
 
