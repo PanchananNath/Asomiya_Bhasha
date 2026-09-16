@@ -13,3 +13,4 @@ coverage/
 
 # Temporary audit files
 *.tmp.js
+.vercel

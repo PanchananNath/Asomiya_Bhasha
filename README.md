@@ -36,7 +36,7 @@ node --version
 npm --version
 ```
 
-এই project-টো Python project নহয়। [requirements.txt](requirements.txt) file-টো reference হিচাপে আছে; JavaScript dependencies-ৰ authoritative source হৈছে `package.json` আৰু `package-lock.json`।
+এই project-টো Python project নহয়। JavaScript dependencies-ৰ authoritative source হৈছে `package.json` আৰু `package-lock.json`।
 
 ## Installation
 
@@ -124,6 +124,61 @@ npm run web
 ```
 
 The Node.js interpreter is the canonical runtime. The browser page is a limited demonstration and currently does not implement every Node.js language feature.
+
+## Free Vercel Deployment
+
+The browser playground can be hosted for free on Vercel as a static web application. The Vercel configuration uses [public](public) as the website output directory.
+
+This is not a Python application. [vercel.json](vercel.json) explicitly disables framework detection and configures Vercel to serve the static `public` directory.
+
+### Deploy from the Vercel dashboard
+
+1. Sign in at [vercel.com](https://vercel.com) with your GitHub account.
+2. Select **Add New Project**.
+3. Import `PanchananNath/Asomiya_Bhasha`.
+4. Keep the project root at the repository root.
+5. Use the detected Vercel configuration from [vercel.json](vercel.json).
+6. Deploy the project.
+
+Vercel will publish a URL similar to:
+
+```text
+https://asomiya-bhasha.vercel.app
+```
+
+The exact URL is assigned by Vercel and may be different.
+
+### Deploy from the terminal
+
+Install or run the Vercel CLI with `npx`:
+
+```bash
+npx vercel
+```
+
+Follow the prompts to sign in, link the project, and create a preview deployment. For a production deployment:
+
+```bash
+npx vercel --prod
+```
+
+If Vercel asks whether to connect the Git repository automatically, choose `No` for a local-only deployment. You can connect the repository later when automatic GitHub deployments are desired.
+
+No environment variables or external services are required for the static playground. The Vercel deployment hosts the browser demonstration only; CLI execution, tests, and the canonical Node.js interpreter continue to run locally.
+
+### Current deployment
+
+The current production playground is available at:
+
+<https://asomiya-bhasha.vercel.app>
+
+The Vercel project uses manual CLI deployments. After local changes are verified, deploy the latest version with:
+
+```powershell
+npx vercel --prod
+```
+
+The GitHub repository is not connected to automatic Vercel deployments at this time.
 
 ## ভাষাৰ উদাহৰণ
 
