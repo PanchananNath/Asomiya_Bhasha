@@ -1,0 +1,15 @@
+node_modules/
+.npm/
+
+# Local editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs and local runtime output
+*.log
+coverage/
+
+# Temporary audit files
+*.tmp.js

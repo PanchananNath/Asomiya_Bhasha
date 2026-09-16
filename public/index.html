@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="as">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অসমীয়া প্ৰ'গ্ৰামিং ভাষা</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Assamese:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <div class="brand-lockup">
+                <div class="brand-mark"><i class="fas fa-code"></i></div>
+                <div>
+                    <p class="eyebrow">ASOMIYA BHASHA <span>•</span> PLAYGROUND</p>
+                    <h1>অসমীয়া প্ৰ'গ্ৰামিং ভাষা</h1>
+                    <p class="subtitle">আপোনাৰ মাতৃভাষাত প্ৰ'গ্ৰামিং শিকা</p>
+                    <p class="developer-credit">Developed by Er Panchanan Nath</p>
+                </div>
+            </div>
+            <div class="header-status">
+                <span class="status-dot"></span>
+                <span>Prototype v1.0</span>
+            </div>
+        </header>
+
+        <div class="workspace-intro">
+            <div>
+                <p class="eyebrow">INTERACTIVE WORKSPACE</p>
+                <h2>Write, run, and learn in one place.</h2>
+            </div>
+            <div class="shortcut-note"><i class="fas fa-keyboard"></i> Ctrl + Enter to run</div>
+        </div>
+
+        <div class="main-content">
+            <div class="editor-section">
+                <div class="editor-header">
+                    <div class="panel-title"><span class="panel-kicker">01</span><div><h2><i class="fas fa-edit"></i> কোড লিখক</h2><p>Build your first Assamese program</p></div></div>
+                    <div class="editor-buttons">
+                        <button id="runBtn" class="btn run-btn">
+                            <i class="fas fa-play"></i> চলাওক
+                        </button>
+                        <button id="clearBtn" class="btn clear-btn">
+                            <i class="fas fa-broom"></i> পৰিষ্কাৰ কৰক
+                        </button>
+                        <button id="exampleBtn" class="btn example-btn">
+                            <i class="fas fa-book"></i> উদাহৰণ
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="code-editor">
+                    <div class="line-numbers">
+                        <div>1</div>
+                        <div>2</div>
+                        <div>3</div>
+                        <div>4</div>
+                        <div>5</div>
+                        <div>6</div>
+                        <div>7</div>
+                        <div>8</div>
+                        <div>9</div>
+                        <div>10</div>
+                    </div>
+                    <textarea id="codeInput" spellcheck="false">
+# আপোনাৰ অসমীয়া কোড ইয়াত লিখক
+লিখা "নমস্কাৰ বিশ্ব!"
+
+সংখ্যা x = ১০
+সংখ্যা y = ২০
+সংখ্যা যোগফল = x + y
+
+লিখা "যোগফল: " + যোগফল
+
+যদি যোগফল > ১৫ থাকিলে
+    লিখা "ডাঙৰ সংখ্যা!"
+নহলে
+    লিখা "সৰু সংখ্যা!"
+শেষ</textarea>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="output-header">
+                    <div class="panel-title"><span class="panel-kicker">02</span><div><h2><i class="fas fa-terminal"></i> ফলাফল</h2><p>Your program output appears here</p></div></div>
+                    <button id="clearOutputBtn" class="btn clear-output-btn">
+                        <i class="fas fa-trash"></i> পৰিষ্কাৰ
+                    </button>
+                </div>
+                <div id="output" class="output-console">
+                    <div class="welcome-message">
+                        <p>অসমীয়া ভাষালৈ স্বাগতম!</p>
+                        <p>ওপৰৰ কোড সম্পাদনা কৰক আৰু "চলাওক" বুটাম টিপক।</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="examples-section">
+                <div class="section-heading"><div><p class="eyebrow">STARTER LIBRARY</p><h2><i class="fas fa-lightbulb"></i> উদাহৰণসমূহ</h2></div><span class="section-count">04 samples</span></div>
+                <div class="example-cards">
+                    <div class="example-card" data-example="hello">
+                        <h3>নমস্কাৰ</h3>
+                        <pre><code>লিখা "নমস্কাৰ অসম!"</code></pre>
+                    </div>
+                    <div class="example-card" data-example="math">
+                        <h3>গণনা</h3>
+                        <pre><code>সংখ্যা a = ১৫
+সংখ্যা b = ৩
+লিখা a * b</code></pre>
+                    </div>
+                    <div class="example-card" data-example="loop">
+                        <h3>লুপ</h3>
+                        <pre><code>সংখ্যা i = ১
+যেতিয়া i <= ৫
+    লিখা i
+    i = i + ১
+শেষ</code></pre>
+                    </div>
+                    <div class="example-card" data-example="function">
+                        <h3>ফাংচন</h3>
+                        <pre><code>কাজ যোগ(a, b)
+    উভতি a + b
+শেষ
+লিখা যোগ(২, ৩)</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="docs-section">
+                <div class="section-heading"><div><p class="eyebrow">QUICK REFERENCE</p><h2><i class="fas fa-book-open"></i> সহায়</h2></div><button id="docsLink" class="text-action">সম্পূৰ্ণ docs <i class="fas fa-arrow-up-right-from-square"></i></button></div>
+                <div class="docs-grid">
+                    <div class="doc-card">
+                        <h3>মূল সিনটেক্স</h3>
+                        <ul>
+                            <li><code>লিখা "মজ্জা"</code> - আউটপুট</li>
+                            <li><code>সংখ্যা x = ১০</code> - সংখ্যা চলক</li>
+                            <li><code>বাক্য নাম = "অসম"</code> - স্ট্রিং চলক</li>
+                            <li><code>যদি x > ৫ থাকিলে</code> - যদি বিবৃতি</li>
+                        </ul>
+                    </div>
+                    <div class="doc-card">
+                        <h3>অপাৰেটৰসমূহ</h3>
+                        <ul>
+                            <li><code>+ - * /</code> - গণনা</li>
+                            <li><code>== != < ></code> - তুলনা</li>
+                            <li><code>আৰু বা নহয়</code> - লজিক</li>
+                        </ul>
+                    </div>
+                    <div class="doc-card">
+                        <h3>তালিকা</h3>
+                        <ul>
+                            <li><code>তালিকা ল = [১,২,৩]</code></li>
+                            <li><code>ল[০]</code> - ইণ্ডেক্সিং</li>
+                            <li><code>দৈৰ্ঘ্য(ল)</code> - দৈৰ্ঘ্য</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>অসমীয়া ভাষা v1.0 | <i class="fas fa-heart"></i> অসমৰ বাবে</p>
+            <p>Developed and open sourced by Er Panchanan Nath | Copyright Er Panchanan Nath</p>
+            <p class="footer-links">
+                <a href="#" id="githubLink"><i class="fab fa-github"></i> GitHub</a>
+                |
+                <a href="#" id="footerDocsLink"><i class="fas fa-file-alt"></i> ডকুমেন্টেচন</a>
+                |
+                <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i> আমি সম্পৰ্কে</a>
+            </p>
+        </footer>
+    </div>
+
+    <div id="exampleModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>উদাহৰণ নির্বাচন করুন</h3>
+            <div class="modal-examples">
+                <div class="modal-example" data-full-example="hello">
+                    <h4>হেল্ল'ৱৰ্ল্ড</h4>
+                    <pre><code># সাধাৰণ হেল্ল'ৱৰ্ল্ড
+লিখা "নমস্কাৰ বিশ্ব!"
+লিখা "অসমীয়া ভাষালৈ স্বাগতম!"</code></pre>
+                </div>
+                <div class="modal-example" data-full-example="math">
+                    <h4>গণনা</h4>
+                    <pre><code># গণনাৰ উদাহৰণ
+সংখ্যা a = ১০
+সংখ্যা b = ৫
+
+লিখা "যোগ: " + (a + b)
+লিখা "বিয়োগ: " + (a - b)
+লিখা "পূৰণ: " + (a * b)
+লিখা "হৰণ: " + (a / b)</code></pre>
+                </div>
+                <div class="modal-example" data-full-example="conditions">
+                    <h4>যদি/নহলে</h4>
+                    <pre><code># যদি/নহলে বিবৃতি
+সংখ্যা নম্বৰ = ১৫
+
+যদি নম্বৰ > ১০ থাকিলে
+    লিখা "নম্বৰ ১০তকৈ ডাঙৰ"
+নহলে
+    লিখা "নম্বৰ ১০তকৈ সৰু"
+শেষ</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="web.js"></script>
+</body>
+</html>
