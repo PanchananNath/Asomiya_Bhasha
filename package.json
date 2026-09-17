@@ -9,8 +9,9 @@
   "scripts": {
     "start": "node src/cli.js",
     "test": "node tests/test.js",
-    "web": "live-server public",
-    "build": "node src/index.js"
+    "web": "npm run build:web && live-server public",
+    "build": "npm run build:web",
+    "build:web": "esbuild src/browser.js --bundle --format=iife --global-name=AsomiyaRuntime --outfile=public/runtime.js"
   },
   "keywords": [
     "assamese",
@@ -25,6 +26,7 @@
     "readline": "^1.3.0"
   },
   "devDependencies": {
+    "esbuild": "^0.25.12",
     "live-server": "^1.2.2"
   },
   "engines": {

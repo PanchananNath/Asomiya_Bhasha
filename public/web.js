@@ -9,9 +9,17 @@ class AsomiyaWeb {
         this.runBtn = document.getElementById('runBtn');
         this.clearBtn = document.getElementById('clearBtn');
         this.exampleBtn = document.getElementById('exampleBtn');
+        this.typingBtn = document.getElementById('typingBtn');
+        this.typingPanel = document.getElementById('typingPanel');
+        this.typingClose = document.getElementById('typingClose');
+        this.typingKeys = document.getElementById('typingKeys');
         this.clearOutputBtn = document.getElementById('clearOutputBtn');
         this.modal = document.getElementById('exampleModal');
         this.closeModal = document.querySelector('.close');
+        this.modalExamples = document.getElementById('modalExamples');
+        this.sampleSearch = document.getElementById('sampleSearch');
+        this.sampleCategory = document.getElementById('sampleCategory');
+        this.sampleCount = document.getElementById('sampleCount');
         
         this.examples = {
             hello: `# সাধাৰণ হেল্ল'ৱৰ্ল্ড প্ৰ'গ্ৰাম
@@ -90,15 +98,39 @@ class AsomiyaWeb {
 
 লিখা "যোগফল: " + যোগ(২, ৩)`
         };
+
+        this.sampleCatalog = this.buildSampleCatalog();
         
         this.init();
+    }
+
+    buildSampleCatalog() {
+        const digits = value => String(value).replace(/[0-9]/g, digit => String.fromCharCode(0x09E6 + Number(digit)));
+        const samples = [];
+        const add = (category, title, code) => samples.push({ id: samples.length + 1, category, title, code });
+        const greetings = ['নমস্কাৰ', 'স্বাগতম', 'শুভদিন', 'শুভসন্ধ্যা', 'শুভৰাত্ৰি', 'অসমলৈ স্বাগতম', 'আজিৰ দিনটো ভাল', 'আহক শিকোঁ', 'মই কোড লিখোঁ', 'অসমীয়া ভাষা'];
+        greetings.forEach((message, index) => add('printing', `প্ৰিণ্ট ${index + 1}`, `লিখা "${message}!"`));
+        const arithmetic = [['যোগ', '+', 10, 20], ['বিয়োগ', '-', 30, 8], ['পূৰণ', '*', 6, 7], ['হৰণ', '/', 40, 5], ['যোগ', '+', 12, 18], ['বিয়োগ', '-', 50, 17], ['পূৰণ', '*', 9, 9], ['হৰণ', '/', 81, 9], ['যোগ', '+', 7, 13], ['বিয়োগ', '-', 100, 45], ['পূৰণ', '*', 8, 12], ['হৰণ', '/', 64, 8], ['যোগ', '+', 25, 25], ['বিয়োগ', '-', 90, 30], ['পূৰণ', '*', 11, 3], ['হৰণ', '/', 72, 9], ['যোগ', '+', 14, 16], ['বিয়োগ', '-', 44, 19], ['পূৰণ', '*', 5, 15], ['হৰণ', '/', 100, 10]];
+        arithmetic.forEach(([name, operator, left, right], index) => add('math', `গণনা ${index + 1}`, `# ${name}\nলিখা ${digits(left)} ${operator} ${digits(right)}`));
+        for (let index = 1; index <= 10; index++) add('variables', `চলক ${index}`, `সংখ্যা মান = ${digits(index * 5)}\nলিখা "মান: " + মান`);
+        ['==', '!=', '>', '>=', '<'].forEach((operator, index) => { const left = index + 3; const right = index % 2 === 0 ? left : left + 1; add('logic', `তুলনা ${index + 1}`, `লিখা ${digits(left)} ${operator} ${digits(right)}`); });
+        for (let index = 1; index <= 5; index++) add('logic', `লজিক ${index}`, `বুলিয়ান ঠিক = ${index % 2 === 0 ? 'সত্য' : 'মিছা'}\nলিখা নহয় ঠিক\nলিখা ঠিক আৰু সত্য\nলিখা ঠিক বা মিছা`);
+        for (let index = 1; index <= 10; index++) add('conditions', `শৰ্ত ${index}`, `সংখ্যা নম্বৰ = ${digits(index + 5)}\nযদি নম্বৰ > ১০ থাকিলে\n    লিখা "ডাঙৰ"\nনহলে\n    লিখা "সৰু"\nশেষ`);
+        for (let index = 1; index <= 10; index++) add('loops', `যেতিয়া ${index}`, `সংখ্যা গণক = ১\nযেতিয়া গণক <= ${digits(index + 2)}\n    লিখা গণক\n    গণক = গণক + ১\nশেষ`);
+        for (let index = 1; index <= 10; index++) add('loops', `প্ৰতিবাৰ ${index}`, `প্ৰতিবাৰ i = ১ লৈকে ${digits(index + 2)}\n    লিখা i\nশেষ`);
+        for (let index = 1; index <= 10; index++) add('functions', `ফাংচন ${index}`, `কাজ যোগ(সংখ্যা a, সংখ্যা b)\n    উভতি a + b\nশেষ\nলিখা যোগ(${digits(index)}, ${digits(index + 1)})`);
+        for (let index = 1; index <= 10; index++) add('arrays', `তালিকা ${index}`, `তালিকা মানসমূহ = [${digits(index)}, ${digits(index + 1)}, ${digits(index + 2)}]\nলিখা মানসমূহ[০]\nলিখা দৈৰ্ঘ্য(মানসমূহ)`);
+        return samples;
     }
     
     init() {
         this.runBtn.addEventListener('click', () => this.runCode());
         this.clearBtn.addEventListener('click', () => this.clearCode());
         this.exampleBtn.addEventListener('click', () => this.openExampleModal());
+        this.typingBtn.addEventListener('click', () => this.toggleTypingPanel());
+        this.typingClose.addEventListener('click', () => this.closeTypingPanel());
         this.clearOutputBtn.addEventListener('click', () => this.clearOutput());
+        this.renderTypingKeyboard();
         
         document.querySelectorAll('.example-card').forEach(card => {
             card.addEventListener('click', (e) => {
@@ -115,13 +147,16 @@ class AsomiyaWeb {
             }
         });
         
-        document.querySelectorAll('.modal-example').forEach(example => {
-            example.addEventListener('click', (e) => {
-                const exampleName = example.dataset.fullExample;
-                this.loadExample(exampleName);
+        this.modalExamples.addEventListener('click', (event) => {
+            const example = event.target.closest('.modal-example');
+            if (example) {
+                this.loadSample(Number(example.dataset.sampleId));
                 this.closeExampleModal();
-            });
+            }
         });
+
+        this.sampleSearch.addEventListener('input', () => this.renderSampleCatalog());
+        this.sampleCategory.addEventListener('change', () => this.renderSampleCatalog());
         
         this.codeInput.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
@@ -150,6 +185,92 @@ class AsomiyaWeb {
         if (!this.codeInput.value.trim()) {
             this.codeInput.value = this.codeInput.textContent.trim();
         }
+        this.updateLineNumbers();
+    }
+
+    renderTypingKeyboard() {
+        const groups = [
+            ['স্বৰ', ['অ', 'আ', 'ই', 'ঈ', 'উ', 'ঊ', 'এ', 'ঐ', 'ও', 'ঔ']],
+            ['ব্যঞ্জন', ['ক', 'খ', 'গ', 'ঘ', 'ঙ', 'চ', 'ছ', 'জ', 'ঝ', 'ঞ', 'ট', 'ঠ', 'ড', 'ঢ', 'ণ', 'ত', 'থ', 'দ', 'ধ', 'ন', 'প', 'ফ', 'ব', 'ভ', 'ম', 'য', 'ৰ', 'ল', 'ৱ', 'শ', 'ষ', 'স', 'হ']],
+            ['চিহ্ন', ['া', 'ি', 'ী', 'ু', 'ূ', 'ৃ', 'ে', 'ৈ', 'ো', 'ৌ', '্', 'ঁ', 'ং', 'ঃ', '়']],
+            ['অঙ্ক', ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']],
+            ['শব্দ', ['লিখা', 'সংখ্যা', 'বাক্য', 'বুলিয়ান', 'তালিকা', 'যদি', 'নহলে', 'যেতিয়া', 'প্ৰতিবাৰ', 'কাজ', 'উভতি', 'সত্য', 'মিছা', 'শেষ']]
+        ];
+
+        this.typingKeys.replaceChildren();
+        groups.forEach(([label, keys]) => {
+            const group = document.createElement('div');
+            group.className = 'typing-group';
+            const heading = document.createElement('span');
+            heading.className = 'typing-group-label';
+            heading.textContent = label;
+            const row = document.createElement('div');
+            row.className = 'typing-row';
+            keys.forEach(key => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'typing-key';
+                button.dataset.insert = key;
+                button.textContent = key;
+                row.appendChild(button);
+            });
+            group.append(heading, row);
+            this.typingKeys.appendChild(group);
+        });
+
+        const controls = document.createElement('div');
+        controls.className = 'typing-controls';
+        [['Space', ' '], ['নতুন line', '\n'], ['পিছলৈ', 'BACKSPACE']].forEach(([label, value]) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'typing-key typing-control';
+            button.dataset.insert = value;
+            button.textContent = label;
+            controls.appendChild(button);
+        });
+        this.typingKeys.appendChild(controls);
+        this.typingKeys.addEventListener('click', event => {
+            const button = event.target.closest('[data-insert]');
+            if (button) this.insertTypingText(button.dataset.insert);
+        });
+    }
+
+    toggleTypingPanel() {
+        const isOpen = !this.typingPanel.hidden;
+        this.typingPanel.hidden = isOpen;
+        this.typingBtn.setAttribute('aria-expanded', String(!isOpen));
+        if (!isOpen) this.codeInput.focus();
+    }
+
+    closeTypingPanel() {
+        this.typingPanel.hidden = true;
+        this.typingBtn.setAttribute('aria-expanded', 'false');
+        this.codeInput.focus();
+    }
+
+    insertTypingText(text) {
+        const start = this.codeInput.selectionStart;
+        const end = this.codeInput.selectionEnd;
+        const value = this.codeInput.value;
+        let nextValue;
+        let nextCursor;
+
+        if (text === 'BACKSPACE') {
+            if (start !== end) {
+                nextValue = value.slice(0, start) + value.slice(end);
+                nextCursor = start;
+            } else {
+                nextValue = value.slice(0, Math.max(0, start - 1)) + value.slice(end);
+                nextCursor = Math.max(0, start - 1);
+            }
+        } else {
+            nextValue = value.slice(0, start) + text + value.slice(end);
+            nextCursor = start + text.length;
+        }
+
+        this.codeInput.value = nextValue;
+        this.codeInput.focus();
+        this.codeInput.setSelectionRange(nextCursor, nextCursor);
         this.updateLineNumbers();
     }
     
@@ -196,48 +317,12 @@ class AsomiyaWeb {
     }
     
     executeCode(code) {
-        const lines = code.split('\n');
-        let output = '';
-        let variables = {};
-        
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i].trim();
-            
-            if (!line || line.startsWith('#')) {
-                continue;
-            }
-            
-            if (line.startsWith('লিখা')) {
-                const expression = line.substring(4).trim();
-                const value = this.evaluateExpression(expression, variables);
-                output += value + '\n';
-                continue;
-            }
-            
-            if (line.startsWith('সংখ্যা') || line.startsWith('বাক্য')) {
-                const parts = line.split('=');
-                const decl = parts[0].trim();
-                const varName = decl.split(' ')[1];
-                
-                if (parts.length > 1) {
-                    const value = this.evaluateExpression(parts[1].trim(), variables);
-                    variables[varName] = value;
-                } else {
-                    variables[varName] = null;
-                }
-                continue;
-            }
-            
-            if (line.includes('=') && !line.startsWith('যদি') && !line.startsWith('যেতিয়া')) {
-                const parts = line.split('=');
-                const varName = parts[0].trim();
-                const value = this.evaluateExpression(parts[1].trim(), variables);
-                variables[varName] = value;
-                continue;
-            }
+        if (!window.AsomiyaRuntime || typeof window.AsomiyaRuntime.run !== 'function') {
+            throw new Error("Canonical browser runtime load নহ'ল");
         }
-        
-        return output;
+
+        const inputProvider = () => window.prompt('ইনপুট দিয়ক:') || '';
+        return window.AsomiyaRuntime.run(code, inputProvider).output;
     }
     
     evaluateExpression(expr, variables) {
@@ -377,6 +462,7 @@ class AsomiyaWeb {
     }
     
     openExampleModal() {
+        this.renderSampleCatalog();
         this.modal.style.display = 'flex';
     }
     
@@ -391,6 +477,36 @@ class AsomiyaWeb {
             
             this.showOutput(`"${exampleName}" উদাহৰণ লোড কৰা হ'ল!`, 'success');
         }
+    }
+
+    loadSample(sampleId) {
+        const sample = this.sampleCatalog.find(item => item.id === sampleId);
+        if (!sample) return;
+        this.codeInput.value = sample.code;
+        this.updateLineNumbers();
+        this.showOutput(`"${sample.title}" উদাহৰণ লোড কৰা হ'ল!`, 'success');
+    }
+
+    renderSampleCatalog() {
+        const query = this.sampleSearch.value.trim().toLowerCase();
+        const category = this.sampleCategory.value;
+        const visibleSamples = this.sampleCatalog.filter(sample => {
+            const matchesCategory = category === 'all' || sample.category === category;
+            const matchesQuery = !query || `${sample.title} ${sample.code}`.toLowerCase().includes(query);
+            return matchesCategory && matchesQuery;
+        });
+        this.sampleCount.textContent = `${visibleSamples.length} / ${this.sampleCatalog.length} samples`;
+        this.modalExamples.replaceChildren(...visibleSamples.map(sample => {
+            const card = document.createElement('div');
+            card.className = 'modal-example';
+            card.dataset.sampleId = sample.id;
+            const title = document.createElement('h4');
+            title.textContent = `${String(sample.id).padStart(3, '0')} · ${sample.title}`;
+            const code = document.createElement('pre');
+            code.textContent = sample.code;
+            card.append(title, code);
+            return card;
+        }));
     }
     
     updateLineNumbers() {

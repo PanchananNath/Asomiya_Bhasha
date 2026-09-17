@@ -20,8 +20,10 @@ Core interpreter milestone সম্পূৰ্ণ:
 - input provider-সহ `পঢ়া()` আৰু `দৈৰ্ঘ্য()` builtin
 - array indexing আৰু list element assignment
 - CLI, REPL, file execution আৰু example programs
+- 100 categorized sample programs for learning and experimentation
+- browser playground with canonical runtime, searchable samples, and an Assamese on-screen keyboard
 
-এইটো এতিয়াও prototype। Node.js runtime-টোৱেই সম্পূৰ্ণ canonical interpreter। Web page-টো বৰ্তমান limited browser demonstration; ই full interpreter bundle নোহোৱালৈকে Node runtime-ৰ সকলো feature সমৰ্থন নকৰে।
+এইটো এতিয়াও prototype। Node.js runtime-টোৱেই canonical interpreter, আৰু web playground-এ build কৰা একে runtime-ৰ browser bundle ব্যৱহাৰ কৰে।
 
 ## প্ৰয়োজনীয়তা
 
@@ -92,6 +94,14 @@ npm run web
 
 তাৰ পিছত `http://localhost:8080` খোলক।
 
+Build only the browser runtime bundle:
+
+```bash
+npm run build
+```
+
+The web editor includes an `অসমীয়া টাইপ` keyboard beside the Run button. It inserts Assamese letters, signs, numerals, keywords, spaces, new lines, and backspaces at the current cursor position.
+
 ## Reproduce From A Clean System
 
 The following sequence reproduces the current project on a new machine:
@@ -107,7 +117,7 @@ node src/cli.js examples/hello.asm
 Expected test result:
 
 ```text
-21 tests passed
+22 tests passed
 0 tests failed
 ```
 
@@ -123,7 +133,7 @@ Run the web playground:
 npm run web
 ```
 
-The Node.js interpreter is the canonical runtime. The browser page is a limited demonstration and currently does not implement every Node.js language feature.
+The Node.js interpreter is the canonical runtime. The browser playground uses a generated browser bundle of the same lexer, parser, AST, and interpreter, so language behavior stays consistent between CLI and web execution.
 
 ## Free Vercel Deployment
 
@@ -164,7 +174,7 @@ npx vercel --prod
 
 If Vercel asks whether to connect the Git repository automatically, choose `No` for a local-only deployment. You can connect the repository later when automatic GitHub deployments are desired.
 
-No environment variables or external services are required for the static playground. The Vercel deployment hosts the browser demonstration only; CLI execution, tests, and the canonical Node.js interpreter continue to run locally.
+No environment variables or external services are required for the static playground. The Vercel deployment hosts the browser playground; CLI execution and tests continue to run locally.
 
 ### Current deployment
 
@@ -222,9 +232,11 @@ asomiya.run(`বাক্য নাম = পঢ়া()
 | [src/ast.js](src/ast.js) | AST node definitions |
 | [src/interpreter.js](src/interpreter.js) | AST execution |
 | [src/index.js](src/index.js) | JavaScript API and file runner |
+| [src/browser.js](src/browser.js) | Browser runtime entrypoint |
 | [src/cli.js](src/cli.js) | CLI and REPL |
 | [tests/test.js](tests/test.js) | Regression tests and example checks |
-| [public](public) | Browser demonstration |
+| [examples/catalog.js](examples/catalog.js) | 100 categorized sample programs |
+| [public](public) | Browser playground and generated runtime output |
 | [docs/syntax.md](docs/syntax.md) | Assamese and English syntax guide |
 | [LICENSE](LICENSE) | MIT license and copyright notice |
 
@@ -246,8 +258,8 @@ Each `run()` call uses a fresh interpreter environment, so separate programs and
 
 1. Add a proper test runner and focused lexer/parser/interpreter tests.
 2. Improve source line and column information in errors.
-3. Bundle the canonical runtime for the browser and remove the separate demonstration evaluator.
-4. Add more collection operations and standard-library functions.
+3. Add more collection operations and standard-library functions.
+4. Improve the browser editor with richer code navigation and diagnostics.
 
 ## GitHub Publication
 

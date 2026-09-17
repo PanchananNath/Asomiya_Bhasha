@@ -3,6 +3,7 @@
  */
 
 const AsomiyaBhasha = require('../src/index');
+const sampleCatalog = require('../examples/catalog');
 const fs = require('fs');
 
 console.log('অসমীয়া ভাষা পৰীক্ষা...\n');
@@ -130,6 +131,15 @@ test('তুলনা আৰু দৈৰ্ঘ্য',
 `তালিকা ফল = [১, ২, ৩]
 লিখা ৫ != ৪
 লিখা দৈৰ্ঘ্য(ফল)`, 'true\n3');
+
+console.log('পৰীক্ষা: ১০০টা sample program');
+if (sampleCatalog.length === 100 && sampleCatalog.every(sample => asomiya.run(sample.code).success)) {
+    console.log('পাছ কৰিলে!\n');
+    passed++;
+} else {
+    console.log('ফেইল কৰিলে!\n');
+    failed++;
+}
 
 console.log('========== উদাহৰণ ফাইল পৰীক্ষা ==========\n');
 

@@ -42,6 +42,9 @@
                         <button id="runBtn" class="btn run-btn">
                             <i class="fas fa-play"></i> চলাওক
                         </button>
+                        <button id="typingBtn" class="btn typing-btn" aria-expanded="false" aria-controls="typingPanel">
+                            <i class="fas fa-keyboard"></i> অসমীয়া টাইপ
+                        </button>
                         <button id="clearBtn" class="btn clear-btn">
                             <i class="fas fa-broom"></i> পৰিষ্কাৰ কৰক
                         </button>
@@ -49,6 +52,14 @@
                             <i class="fas fa-book"></i> উদাহৰণ
                         </button>
                     </div>
+                </div>
+
+                <div id="typingPanel" class="typing-panel" hidden>
+                    <div class="typing-panel-header">
+                        <div><p class="eyebrow">ON-SCREEN INPUT</p><h3>অসমীয়া keyboard</h3></div>
+                        <button id="typingClose" class="typing-close" type="button" aria-label="Keyboard বন্ধ কৰক"><i class="fas fa-xmark"></i></button>
+                    </div>
+                    <div id="typingKeys" class="typing-keys"></div>
                 </div>
                 
                 <div class="code-editor">
@@ -95,7 +106,7 @@
             </div>
 
             <div class="examples-section">
-                <div class="section-heading"><div><p class="eyebrow">STARTER LIBRARY</p><h2><i class="fas fa-lightbulb"></i> উদাহৰণসমূহ</h2></div><span class="section-count">04 samples</span></div>
+                <div class="section-heading"><div><p class="eyebrow">STARTER LIBRARY</p><h2><i class="fas fa-lightbulb"></i> উদাহৰণসমূহ</h2></div><span class="section-count">100 samples</span></div>
                 <div class="example-cards">
                     <div class="example-card" data-example="hello">
                         <h3>নমস্কাৰ</h3>
@@ -173,40 +184,29 @@
     <div id="exampleModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h3>উদাহৰণ নির্বাচন করুন</h3>
-            <div class="modal-examples">
-                <div class="modal-example" data-full-example="hello">
-                    <h4>হেল্ল'ৱৰ্ল্ড</h4>
-                    <pre><code># সাধাৰণ হেল্ল'ৱৰ্ল্ড
-লিখা "নমস্কাৰ বিশ্ব!"
-লিখা "অসমীয়া ভাষালৈ স্বাগতম!"</code></pre>
-                </div>
-                <div class="modal-example" data-full-example="math">
-                    <h4>গণনা</h4>
-                    <pre><code># গণনাৰ উদাহৰণ
-সংখ্যা a = ১০
-সংখ্যা b = ৫
-
-লিখা "যোগ: " + (a + b)
-লিখা "বিয়োগ: " + (a - b)
-লিখা "পূৰণ: " + (a * b)
-লিখা "হৰণ: " + (a / b)</code></pre>
-                </div>
-                <div class="modal-example" data-full-example="conditions">
-                    <h4>যদি/নহলে</h4>
-                    <pre><code># যদি/নহলে বিবৃতি
-সংখ্যা নম্বৰ = ১৫
-
-যদি নম্বৰ > ১০ থাকিলে
-    লিখা "নম্বৰ ১০তকৈ ডাঙৰ"
-নহলে
-    লিখা "নম্বৰ ১০তকৈ সৰু"
-শেষ</code></pre>
-                </div>
+            <div class="sample-modal-heading">
+                <div><p class="eyebrow">100 RUNNABLE SAMPLES</p><h3>উদাহৰণ নির্বাচন কৰক</h3></div>
+                <span id="sampleCount" class="section-count">100 samples</span>
             </div>
+            <div class="sample-controls">
+                <input id="sampleSearch" type="search" placeholder="উদাহৰণ বিচাৰক..." aria-label="উদাহৰণ বিচাৰক">
+                <select id="sampleCategory" aria-label="উদাহৰণৰ বিভাগ">
+                    <option value="all">সকলো বিভাগ</option>
+                    <option value="printing">প্ৰিণ্ট</option>
+                    <option value="math">গণনা</option>
+                    <option value="variables">চলক</option>
+                    <option value="logic">লজিক</option>
+                    <option value="conditions">শৰ্ত</option>
+                    <option value="loops">লুপ</option>
+                    <option value="functions">ফাংচন</option>
+                    <option value="arrays">তালিকা</option>
+                </select>
+            </div>
+            <div id="modalExamples" class="modal-examples"></div>
         </div>
     </div>
 
+    <script src="runtime.js"></script>
     <script src="web.js"></script>
 </body>
 </html>
