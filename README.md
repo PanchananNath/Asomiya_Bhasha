@@ -137,7 +137,7 @@ The Node.js interpreter is the canonical runtime. The browser playground uses a 
 
 
 
-## ভাষাৰ উদাহৰণ
+## উদাহৰণ
 
 ```asm
 সংখ্যা বয়স = ২৫
