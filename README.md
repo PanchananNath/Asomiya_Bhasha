@@ -135,60 +135,7 @@ npm run web
 
 The Node.js interpreter is the canonical runtime. The browser playground uses a generated browser bundle of the same lexer, parser, AST, and interpreter, so language behavior stays consistent between CLI and web execution.
 
-## Free Vercel Deployment
 
-The browser playground can be hosted for free on Vercel as a static web application. The Vercel configuration uses [public](public) as the website output directory.
-
-This is not a Python application. [vercel.json](vercel.json) explicitly disables framework detection and configures Vercel to serve the static `public` directory.
-
-### Deploy from the Vercel dashboard
-
-1. Sign in at [vercel.com](https://vercel.com) with your GitHub account.
-2. Select **Add New Project**.
-3. Import `PanchananNath/Asomiya_Bhasha`.
-4. Keep the project root at the repository root.
-5. Use the detected Vercel configuration from [vercel.json](vercel.json).
-6. Deploy the project.
-
-Vercel will publish a URL similar to:
-
-```text
-https://asomiya-bhasha.vercel.app
-```
-
-The exact URL is assigned by Vercel and may be different.
-
-### Deploy from the terminal
-
-Install or run the Vercel CLI with `npx`:
-
-```bash
-npx vercel
-```
-
-Follow the prompts to sign in, link the project, and create a preview deployment. For a production deployment:
-
-```bash
-npx vercel --prod
-```
-
-If Vercel asks whether to connect the Git repository automatically, choose `No` for a local-only deployment. You can connect the repository later when automatic GitHub deployments are desired.
-
-No environment variables or external services are required for the static playground. The Vercel deployment hosts the browser playground; CLI execution and tests continue to run locally.
-
-### Current deployment
-
-The current production playground is available at:
-
-<https://asomiya-bhasha.vercel.app>
-
-The Vercel project uses manual CLI deployments. After local changes are verified, deploy the latest version with:
-
-```powershell
-npx vercel --prod
-```
-
-The GitHub repository is not connected to automatic Vercel deployments at this time.
 
 ## ভাষাৰ উদাহৰণ
 
@@ -254,27 +201,8 @@ if (result.success) {
 
 Each `run()` call uses a fresh interpreter environment, so separate programs and REPL commands are isolated from one another.
 
-## Development Roadmap
 
-1. Add a proper test runner and focused lexer/parser/interpreter tests.
-2. Improve source line and column information in errors.
-3. Add more collection operations and standard-library functions.
-4. Improve the browser editor with richer code navigation and diagnostics.
 
-## GitHub Publication
-
-To publish a local checkout for the first time:
-
-```bash
-git init
-git add .
-git commit -m "Initial Asomiya Bhasha interpreter"
-git branch -M main
-git remote add origin https://github.com/PanchananNath/Asomiya_Bhasha.git
-git push -u origin main
-```
-
-Do not commit `node_modules`; it is excluded by [.gitignore](.gitignore). Anyone cloning the repository should run `npm ci` before using the CLI, tests, or web playground.
 
 ## License
 
