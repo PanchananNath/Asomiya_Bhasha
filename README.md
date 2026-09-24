@@ -6,6 +6,63 @@
 **Open source project by:** Er Panchanan Nath  
 **Original copyright:** Er Panchanan Nath
 
+## Introduction
+
+**Asomiya Bhasha** is a small educational programming language prototype designed to allow programming concepts to be explored using Assamese identifiers, keywords, and numerals.
+
+The runtime is implemented in Node.js and follows a simple:
+
+**lexer → parser → AST → interpreter**
+
+architecture.
+
+The **Node.js runtime is the canonical interpreter**. The web playground uses a generated browser bundle of the same runtime, keeping language behavior consistent between CLI and browser execution.
+
+---
+
+## Current Status
+
+The core interpreter milestone is complete.
+
+The language currently supports:
+
+* Assamese and ASCII identifiers
+* Underscores in identifiers
+* Assamese and ASCII numerals
+* Numbers, strings, booleans, and lists
+* `লিখা` output statement
+* Variable declarations
+* Variable assignment
+* Comments
+* Arithmetic operators
+* Comparison operators
+* Logical operators
+* Unary operators
+* `যদি`, `নহলে`, and `নহলে যদি` conditional statements
+* `যেতিয়া` while loops
+* `প্ৰতিবাৰ চলক = আৰম্ভ লৈকে শেষ` range loops
+* Functions
+* Typed parameters
+* `উভতি` return statements
+* `পঢ়া()` input builtin
+* `দৈৰ্ঘ্য()` builtin
+* Input providers
+* Array indexing
+* List element assignment
+* Command-line interface (CLI)
+* REPL
+* Source-file execution
+* Runnable example programs
+* 100 categorized sample programs
+* Browser playground
+* Searchable samples
+* Assamese on-screen keyboard
+
+> **Important:** The project is still a prototype. The Node.js runtime is the canonical implementation, while the web playground uses a generated browser bundle of the same runtime.
+
+---
+
+
 ## বৰ্তমান অৱস্থা
 
 Core interpreter milestone সম্পূৰ্ণ:
