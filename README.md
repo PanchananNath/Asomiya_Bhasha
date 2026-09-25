@@ -1,6 +1,6 @@
 # অসমীয়া ভাষা (Asomiya Bhasha)
 
-অসমীয়া নাম, কীৱৰ্ড আৰু সংখ্যাৰে লিখিব পৰা এটা সৰু শিক্ষামূলক programming language prototype। Runtime-টো Node.js-ত চলে আৰু lexer, parser, AST আৰু interpreter-ৰে গঠিত।
+অসমীয়া নাম, কীৱৰ্ড আৰু সংখ্যাৰে লিখিব পৰা এটা সৰু শিক্ষামূলক programming language prototype। Runtime-টো Node.js-ত চলাকৈ আৰু lexer, parser, AST আৰু interpreter-ৰে সংগঠিত।
 
 **Developed by:** Er Panchanan Nath  
 **Open source project by:** Er Panchanan Nath  
@@ -63,7 +63,7 @@ The language currently supports:
 ---
 
 
-## বৰ্তমান অৱস্থা
+## বৰ্তমানৰ অৱস্থা
 
 Core interpreter milestone সম্পূৰ্ণ:
 
@@ -123,7 +123,7 @@ chmod +x setup.sh
 
 ### Configuration
 
-এই prototype-ৰ বাবে কোনো `.env` file বা external service configuration প্ৰয়োজন নাই।
+এই prototype-ৰ বাবে কোনো `.env` file বা external service configuration ৰ প্ৰয়োজন নাই।
 
 - Source files UTF-8 encoding-ত save কৰিব লাগে।
 - CLI-এ local files execute কৰে।
