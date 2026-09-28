@@ -1,5 +1,8 @@
 # অসমীয়া ভাষা (Asomiya Bhasha)
 
+
+<img width="254" height="254" alt="logo" src="https://github.com/user-attachments/assets/53ece51a-409f-49f7-9a58-40ef8b11c380" />
+
 অসমীয়া নাম, কীৱৰ্ড আৰু সংখ্যাৰে লিখিব পৰা এটা সৰু শিক্ষামূলক programming language prototype। Runtime-টো Node.js-ত চলাকৈ আৰু lexer, parser, AST আৰু interpreter-ৰে সংগঠিত।
 
 **Developed by:** Er Panchanan Nath  
