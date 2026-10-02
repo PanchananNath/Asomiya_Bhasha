@@ -68,8 +68,6 @@ The language currently supports:
 
 ## বৰ্তমানৰ অৱস্থা
 
-Core interpreter milestone সম্পূৰ্ণ:
-
 - Assamese আৰু ASCII identifier, underscore, আৰু Assamese/ASCII সংখ্যা
 - সংখ্যা, বাক্য, বুলিয়ান আৰু তালিকা
 - `লিখা`, variable declaration, assignment আৰু comments
