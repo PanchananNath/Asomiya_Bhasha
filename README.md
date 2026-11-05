@@ -245,19 +245,6 @@ asomiya.run(`বাক্য নাম = পঢ়া()
 | [docs/syntax.md](docs/syntax.md) | Assamese and English syntax guide |
 | [LICENSE](LICENSE) | MIT license and copyright notice |
 
-## JavaScript API
-
-```js
-const AsomiyaBhasha = require('./src');
-
-const result = new AsomiyaBhasha().run(`লিখা "নমস্কাৰ"`);
-
-if (result.success) {
-	console.log(result.output);
-}
-```
-
-Each `run()` call uses a fresh interpreter environment, so separate programs and REPL commands are isolated from one another.
 
 
 
