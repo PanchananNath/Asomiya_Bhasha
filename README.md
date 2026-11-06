@@ -245,6 +245,7 @@ asomiya.run(`বাক্য নাম = পঢ়া()
 | [docs/syntax.md](docs/syntax.md) | Assamese and English syntax guide |
 | [LICENSE](LICENSE) | MIT license and copyright notice |
 
+<img width="5828" height="7291" alt="diagram" src="https://github.com/user-attachments/assets/a17c88c7-d675-42db-acc9-782b1e00743c" />
 
 
 
