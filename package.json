@@ -1,35 +1,52 @@
 {
   "name": "asomiya-bhasha",
-  "version": "1.0.0",
-  "description": "An Assamese programming language for beginners",
+  "version": "2.0.1",
+  "description": "Asomiya Bhasha (অসমীয়া ভাষা) — a statically typed, C-level programming language written in Assamese script, compiled to native code through C",
   "main": "src/index.js",
   "bin": {
     "asomiya": "./src/cli.js"
   },
+  "files": [
+    "src/",
+    "examples/",
+    "docs/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "node src/cli.js",
     "test": "node tests/test.js",
-    "web": "npm run build:web && live-server public",
+    "test:quick": "node tests/test.js --quick",
+    "test:clang": "node tests/test.js --cc clang",
     "build": "npm run build:web",
-    "build:web": "esbuild src/browser.js --bundle --format=iife --global-name=AsomiyaRuntime --outfile=public/runtime.js"
+    "build:web": "esbuild src/browser.js --bundle --format=iife --global-name=AsomiyaRuntime --outfile=public/runtime.js",
+    "web": "npm run build:web && live-server public"
   },
   "keywords": [
     "assamese",
-    "programming",
-    "language",
-    "indian",
-    "regional"
+    "asomiya",
+    "programming-language",
+    "compiler",
+    "c",
+    "systems-programming",
+    "mother-tongue",
+    "education"
   ],
   "author": "Er Panchanan Nath",
   "license": "MIT",
-  "dependencies": {
-    "readline": "^1.3.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PanchananNath/Asomiya_Bhasha.git"
   },
+  "bugs": {
+    "url": "https://github.com/PanchananNath/Asomiya_Bhasha/issues"
+  },
+  "homepage": "https://github.com/PanchananNath/Asomiya_Bhasha#readme",
   "devDependencies": {
     "esbuild": "^0.25.12",
     "live-server": "^1.2.2"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   }
 }

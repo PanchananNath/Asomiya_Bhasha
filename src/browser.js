@@ -1,19 +1,21 @@
-const Lexer = require('./lexer');
-const Parser = require('./parser');
-const Interpreter = require('./interpreter');
+'use strict';
+/**
+ * Browser entry point, bundled by esbuild into public/runtime.js as the
+ * global `AsomiyaRuntime`. Browsers have no C compiler, so the playground
+ * translates Asomiya to C and reports errors; native execution needs the CLI.
+ */
+const { compile, VERSION } = require('./compiler');
+const samples = require('../examples/catalog');
 
-function run(code, inputProvider = null) {
-    const lexer = new Lexer(code);
-    const tokens = lexer.tokenize();
-    const parser = new Parser(tokens);
-    const ast = parser.parse();
-    const interpreter = new Interpreter(inputProvider);
-
+function translate(code, opts = {}) {
+    const res = compile(code, { file: 'playground.asb', asciiDigits: !!opts.asciiDigits, asciiNames: !!opts.asciiNames });
     return {
-        output: interpreter.interpret(ast),
-        tokens,
-        ast
+        success: res.ok,
+        c: res.ok ? res.c : '',
+        diagnostics: res.diagnostics.formatAll(),
+        errors: res.diagnostics.errors.length,
+        warnings: res.diagnostics.warnings.length,
     };
 }
 
-module.exports = { run };
+module.exports = { translate, VERSION, samples, categories: samples.CATEGORIES };

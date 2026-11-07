@@ -1,546 +1,264 @@
-# অসমীয়া ভাষা - Syntax Reference
+# অসমীয়া ভাষা ২.০ — শিকিবলৈ সহায় (Tutorial)
 
-এই নথিখনত অসমীয়া ভাষাৰ বৰ্তমানৰ syntax আৰু program চলোৱাৰ নিয়ম সহজ ভাষাত বুজোৱা হৈছে। তলত প্ৰথমে অসমীয়া গাইড আৰু তাৰ পিছত একে বিষয়ৰ English reference দিয়া হৈছে।
+এই গাইডত ভাষাটোৰ মূল কথাবোৰ উদাহৰণসহ দিয়া হৈছে। সম্পূৰ্ণ নিয়ম আৰু ব্যাকৰণ (grammar) [spec.md](spec.md)-ত আছে।
 
-## অসমীয়া গাইড
+প্ৰতিটো উদাহৰণ এটা `.asb` ফাইলত save কৰি চলাওক:
 
-### Code কেনেকৈ লিখিব আৰু চলাব
-
-1. Project folder বা `examples` folder-ত `.asm` extension-ৰ এটা file বনাওক, যেনে `program.asm`।
-2. File-টো UTF-8 encoding-ত save কৰক।
-3. এটা statement সাধাৰণতে এটা line-ত লিখক।
-4. VS Code-ৰ integrated terminal-ত project folder-ৰ পৰা program চলাওক:
-
-```powershell
-node src/cli.js program.asm
+```bash
+node src/cli.js মোৰ_প্ৰ'গ্ৰাম.asb
 ```
 
-Example file চলাবলৈ:
+## ১. প্ৰথম প্ৰ'গ্ৰাম
 
-```powershell
-node src/cli.js examples/hello.asm
-```
-
-Test চলাবলৈ:
-
-```powershell
-npm test
-```
-
-Interactive REPL চলাবলৈ:
-
-```powershell
-node src/cli.js --repl
-```
-
-এই prototype-ত আলাদা machine-code compilation step নাই। Source code lexer, parser, AST আৰু interpreter-ৰ মাজেৰে গৈ execute হয়।
-
-### Basic program structure
-
-সাধাৰণতে program-ত comment, variable declaration, calculation আৰু output থাকে:
-
-```asm
-# দাম আৰু পৰিমাণ
-সংখ্যা দাম = ৫০
-সংখ্যা পৰিমাণ = ৩
-সংখ্যা মুঠ = দাম * পৰিমাণ
-
-লিখা "মুঠ দাম: " + মুঠ
-```
-
-Output:
-
-```text
-মুঠ দাম: 150
-```
-
-Comment `#`-ৰে আৰম্ভ হয়। খালী line interpreter-এ আওকাণ কৰে।
-
-### Hello World
-
-```asm
+```asb
 লিখা "নমস্কাৰ বিশ্ব!"
-লিখা "অসমীয়া ভাষালৈ স্বাগতম!"
-
-সংখ্যা বয়স = ২৫
-বাক্য নাম = "ইঞ্জিনিয়াৰ পঞ্চানন নাথ"
-লিখা "মোৰ নাম " + নাম + " আৰু বয়স " + বয়স
 ```
 
-### Variable আৰু data type
+`লিখা`-এ মানবোৰ space দি লিখে আৰু শেষত নতুন শাৰী দিয়ে। সংখ্যা অসমীয়া অংকত ওলায়:
 
-Type keyword-ৰ পিছত variable name আৰু value লিখিব লাগে:
+```asb
+লিখা "যোগফল:", ২ + ৩        # যোগফল: ৫
+দেখুওৱা "ক"                  # নতুন শাৰী নিদিয়াকৈ
+দেখুওৱা "খ"
+লিখা                          # ক খ
+```
 
-```asm
-সংখ্যা বয়স = ২৫
+`#`-ৰ পিছৰ লেখা মন্তব্য (comment)।
+
+## ২. চলক আৰু প্ৰকাৰ (variables and types)
+
+প্ৰতিটো চলকৰ প্ৰকাৰ লিখিব লাগে। মান নিদিলে চলক শূন্যৰে আৰম্ভ হয়।
+
+```asb
+পূৰ্ণ বয়স = ২৮            # ৩২-বিট পূৰ্ণ সংখ্যা
+পূ৬৪ জনসংখ্যা = ৩১২০৫৫৭৬   # ৬৪-বিট
+দশমিক উচ্চতা = ১.৭৫
+বুলিয়ান ছাত্ৰ = সত্য
 বাক্য নাম = "অসম"
-বুলিয়ান ঠিক = সত্য
-তালিকা ফল = ["আম", "কল"]
+আখৰ বৰ্ণ = 'A'
+স্থিৰ পূৰ্ণ সৰ্বোচ্চ = ১০০   # সলনি কৰিব নোৱাৰি
+পূৰ্ণ গণক                  # ০
 ```
 
-আগতে declare কৰা variable assignment-ৰে সলনি কৰিব পাৰি:
+| প্ৰকাৰ | কি ৰাখে |
+| --- | --- |
+| `পূৰ্ণ`, `পূ৮`, `পূ১৬`, `পূ৩২`, `পূ৬৪` | চিহ্নযুক্ত পূৰ্ণ সংখ্যা |
+| `ধ৮`, `ধ১৬`, `ধ৩২`, `ধ৬৪` | চিহ্নহীন (০ বা ধনাত্মক) পূৰ্ণ সংখ্যা |
+| `দশমিক`, `দশমিক৩২` | দশমিক সংখ্যা |
+| `বুলিয়ান` | `সত্য` বা `মিছা` |
+| `আখৰ` | এটা বাইট (ASCII আখৰ) |
+| `বাক্য` | লেখা (string) |
 
-```asm
-সংখ্যা গণক = ১
-গণক = গণক + ১
-লিখা গণক
+দশমিকক পূৰ্ণলৈ নিবলৈ `হিচাপে` লিখক:
+
+```asb
+দশমিক উষ্ণতা = ৩৬.৬
+পূৰ্ণ গোটা = উষ্ণতা হিচাপে পূৰ্ণ    # ৩৬
+লিখা ৭ / ২, ৭ হিচাপে দশমিক / ২      # ৩ ৩.৫
 ```
 
-`সংখ্যা` number, `বাক্য` string, `বুলিয়ান` boolean, `তালিকা` array আৰু `খালি` null বুজায়। Boolean value হৈছে `সত্য` আৰু `মিছা`। Assamese digits (`০১২৩৪৫৬৭৮৯`) আৰু English digits দুয়োটাই চলে।
+## ৩. গণনা আৰু তুলনা
 
-### Basic operations আৰু operators
-
-```asm
-লিখা ৫ + ৩
-লিখা ২০ - ৫
-লিখা ৬ * ৭
-লিখা ২০ / ৪
-লিখা -৫
+```asb
+লিখা ১৭ + ৫, ১৭ - ৫, ১৭ * ৫, ১৭ / ৫, ১৭ % ৫   # ২২ ১২ ৮৫ ৩ ২
+লিখা ৫ > ৩, ৫ == ৩, ৫ != ৩                     # সত্য মিছা সত্য
+লিখা সত্য আৰু মিছা, সত্য বা মিছা, নহয় সত্য      # মিছা সত্য মিছা
+পূৰ্ণ x = ১০
+x += ৫         # x = x + ৫
+x++            # x = x + ১
 ```
 
-Comparison operators:
+## ৪. চৰ্ত (conditions)
 
-```asm
-লিখা ৫ == ৫
-লিখা ৫ != ৪
-লিখা ৫ > ৩
-লিখা ৫ >= ৫
-লিখা ৩ < ৫
-লিখা ৩ <= ৫
-```
-
-Logical operators:
-
-```asm
-লিখা সত্য আৰু নহয় মিছা
-লিখা মিছা বা সত্য
-লিখা নহয় মিছা
-```
-
-`+` operator-এ number যোগ কৰে। যিকোনো এটা value string হ'লে `+`-এ string জোৰে:
-
-```asm
-সংখ্যা a = ১০
-সংখ্যা b = ২০
-লিখা "যোগফল: " + (a + b)
-```
-
-### Condition
-
-`যদি` condition-ৰ শেষত `থাকিলে`, আৰু block-ৰ শেষত `শেষ` লিখিব লাগে:
-
-```asm
-যদি বয়স >= ১৮ থাকিলে
-	লিখা "প্ৰাপ্তবয়স্ক"
-নহলে যদি বয়স >= ১৩ থাকিলে
-	লিখা "কিশোৰ"
+```asb
+পূৰ্ণ নম্বৰ = ৮২
+যদি নম্বৰ >= ৯০ থাকিলে
+    লিখা "এ+"
+নহলে যদি নম্বৰ >= ৭৫ থাকিলে
+    লিখা "এ"
 নহলে
-	লিখা "শিশু"
+    লিখা "বি"
 শেষ
 ```
 
-### Loop
+গোটেই `যদি … নহলে যদি … নহলে` এটা `শেষ`-ৰে বন্ধ হয়।
 
-While loop:
+এটা মানৰ বহুতো সম্ভাৱনা থাকিলে `বাছক`:
 
-```asm
-সংখ্যা i = ১
-যেতিয়া i <= ৩
-	লিখা i
-	i = i + ১
+```asb
+পূৰ্ণ দিন = ৩
+বাছক দিন
+    ক্ষেত্ৰ ১, ৭
+        লিখা "সপ্তাহান্ত"
+    ক্ষেত্ৰ ২, ৩, ৪, ৫, ৬
+        লিখা "কামৰ দিন"
+    অন্যথা
+        লিখা "ভুল দিন"
 শেষ
 ```
 
-Ascending range loop:
+সৰু চৰ্তৰ বাবে `?:` — `লিখা x % ২ == ০ ? "যুগ্ম" : "অযুগ্ম"`
 
-```asm
-প্ৰতিবাৰ i = ১ লৈকে ৫
-	লিখা i
+## ৫. লুপ (loops)
+
+```asb
+পূৰ্ণ i = ১
+যেতিয়া i <= ৩              # চৰ্ত সত্য হৈ থকালৈকে
+    লিখা i
+    i++
 শেষ
+
+প্ৰতিবাৰ k = ১ লৈকে ৫          # ১, ২, ৩, ৪, ৫
+    দেখুওৱা k
+শেষ
+লিখা
+
+প্ৰতিবাৰ k = ১০ লৈকে ০ ক্ৰমে -২   # ১০, ৮, ৬, ৪, ২, ০
+    দেখুওৱা k
+শেষ
+লিখা
+
+প্ৰতিবাৰ (পূৰ্ণ j = ০; j < ৩; j++)   # C-ৰ দৰে
+    দেখুওৱা j
+শেষ
+লিখা
+
+কৰা                                 # অন্ততঃ এবাৰ চলে
+    i--
+শেষ যেতিয়া i > ০
 ```
 
-`লৈকে`-ৰ শেষৰ সংখ্যা loop-ত অন্তৰ্ভুক্ত হয় আৰু loop variable-এ প্ৰতিবাৰ ১ বৃদ্ধি পায়।
+`ভাঙা`-এ loop-ৰ পৰা ওলাই যায়, `আগবাঢ়া`-এ পৰৱৰ্তী পাকলৈ যায়।
 
-### Function
+## ৬. কাজ (functions)
 
-Function `কাজ`-ৰে আৰম্ভ, `উভতি`-ৰে value ঘূৰাই আৰু `শেষ`-ৰে বন্ধ হয়:
+```asb
+কাজ যোগ(পূৰ্ণ a, পূৰ্ণ b) -> পূৰ্ণ
+    উভতি a + b
+শেষ
 
-```asm
-কাজ যোগ(সংখ্যা a, সংখ্যা b)
-	উভতি a + b
+কাজ নমস্কাৰ_দিয়া(বাক্য নাম)        # একো ঘূৰাই নিদিয়ে
+    লিখা "নমস্কাৰ,", নাম
 শেষ
 
 লিখা যোগ(২, ৩)
+নমস্কাৰ_দিয়া("ৰিমা")
 ```
 
-Function-এ নিজকে call কৰিব পাৰে:
+`-> প্ৰকাৰ` নিদিলে প্ৰথম `উভতি`-ৰ মানৰ পৰা প্ৰকাৰ বুজি লোৱা হয়। নিজকে মতা (recursive) কাজত প্ৰকাৰটো লিখি দিয়াই ভাল:
 
-```asm
-কাজ ফেক্ট(সংখ্যা n)
-	যদি n <= ১ থাকিলে
-		উভতি ১
-	নহলে
-		উভতি n * ফেক্ট(n - ১)
-	শেষ
+```asb
+কাজ ফেক্ট(পূ৬৪ n) -> পূ৬৪
+    যদি n <= ১ থাকিলে
+        উভতি ১
+    শেষ
+    উভতি n * ফেক্ট(n - ১)
+শেষ
+```
+
+## ৭. তালিকা (arrays)
+
+```asb
+পূৰ্ণ[] মান = [৫, ২, ৯]          # আকাৰ ৩
+পূৰ্ণ[১০] খালি_তালিকা              # ১০টা ০
+মান[১] = ৭
+লিখা মান, দৈৰ্ঘ্য(মান)            # [৫, ৭, ৯] ৩
+
+পূৰ্ণ[২][৩] m = [[১, ২, ৩], [৪, ৫, ৬]]
+লিখা m[১][২]                      # ৬
+
+বাক্য[] ফল = ["আম", "কল"]
+```
+
+তালিকাৰ সূচী (index) ০ৰ পৰা আৰম্ভ হয়।
+
+## ৮. সূচক আৰু স্মৃতি (pointers and memory)
+
+সূচকে আন এটা মানৰ ঠিকনা ৰাখে। `&x` = x-ৰ ঠিকনা, `*p` = p-এ দেখুওৱা মান।
+
+```asb
+কাজ সলনি(পূৰ্ণ* ক, পূৰ্ণ* খ)
+    পূৰ্ণ t = *ক
+    *ক = *খ
+    *খ = t
 শেষ
 
-লিখা ফেক্ট(৫)
+পূৰ্ণ a = ৩, b = ৭
+সলনি(&a, &b)
+লিখা a, b                      # ৭ ৩
+
+পূৰ্ণ* তালিকা = নতুন(পূৰ্ণ, ১০০)   # heap-ত ১০০টা পূৰ্ণ
+তালিকা[৯৯] = ৫
+মুকলি(তালিকা)                   # কাম শেষ হ'লে মুক্ত কৰক
 ```
 
-### তালিকা আৰু input
+## ৯. গঠন, সংযোগ আৰু গণনা
 
-Index ০-ৰ পৰা আৰম্ভ হয়:
+```asb
+গঠন বিন্দু
+    পূৰ্ণ x, y
+শেষ
 
-```asm
-তালিকা ফল = ["আম", "কল", "লিচু"]
-লিখা ফল[০]
-ফল[১] = "কমলা"
-লিখা ফল[১]
-লিখা দৈৰ্ঘ্য(ফল)
+বিন্দু p = {x: ১, y: ২}
+বিন্দু* q = &p
+q->y = ৫                         # সূচকৰ পৰা: ->
+লিখা p, p.x                      # {x: ১, y: ৫} ১
+
+গণনা ৰং
+    ৰঙা
+    সেউজীয়া
+    নীলা
+শেষ
+ৰং এটা = নীলা                    # ২
 ```
 
-Input:
+## ১০. ইনপুট আৰু ফাইল
 
-```asm
+```asb
+দেখুওৱা "নাম কি?"
 বাক্য নাম = পঢ়া()
-লিখা "নমস্কাৰ " + নাম
+দেখুওৱা "বয়স?"
+পূ৬৪ বয়স = পঢ়া_পূৰ্ণ()          # অসমীয়া বা ASCII অংক দুয়োটা চলে
+লিখা নাম, বয়স + ১
+
+ফাইল* f = খোলা("টোকা.txt", "w")
+ফাইলত_লিখা(f, "নমস্কাৰ\n")
+বন্ধ(f)
 ```
 
-`পঢ়া()`-ৰ input provider JavaScript API-ৰ পৰা দিব পাৰি।
+## ১১. আন ফাইল আৰু C লাইব্ৰেৰী
 
----
-
-## English Reference
-
-This document describes the language features currently implemented by the Node.js interpreter.
-
-## Table of Contents
-
-1. [Writing and Running Code](#writing-and-running-code)
-2. [Basic Program Structure](#basic-program-structure)
-3. [Hello World](#hello-world)
-4. [Variables](#variables)
-5. [Data Types](#data-types)
-6. [Operators](#operators)
-7. [Control Flow](#control-flow)
-8. [Loops](#loops)
-9. [Functions](#functions)
-10. [Arrays](#arrays)
-11. [Built-in Functions](#built-in-functions)
-
-## Writing and Running Code
-
-### 1. Create a source file
-
-Create a file with the `.asm` extension, for example `program.asm`, inside the project folder or its `examples` directory. Save the file as UTF-8 so Assamese characters are preserved.
-
-### 2. Write the program
-
-Each instruction normally occupies one line. Use Assamese keywords for the language operation and a name for each variable:
-
-```asm
-সংখ্যা a = ১০
-সংখ্যা b = ২০
-লিখা a + b
+```asb
+আমদানি "lib/geometry.asb"          # আন .asb ফাইলৰ ঘোষণা
+বাহিৰৰ কাজ abs(পূৰ্ণ) -> পূৰ্ণ         # C-ৰ কাজ
+লিখা abs(-৫)
 ```
 
-### 3. Execute the program from VS Code
+## ১২. ডাঙৰ প্ৰ'গ্ৰাম: `মূল`
 
-Open the integrated terminal in the project folder and run:
+শীৰ্ষ স্তৰৰ বিবৃতিৰ সলনি `মূল` কাজ লিখিব পাৰি; তেতিয়া command-line আৰ্গুমেণ্ট পোৱা যায়:
 
-```powershell
-node src/cli.js program.asm
-```
-
-For a file inside `examples`:
-
-```powershell
-node src/cli.js examples/hello.asm
-```
-
-The interpreter reads the source, creates tokens, builds an AST, executes the AST, and prints the result. There is currently no separate machine-code compilation step.
-
-Run the complete test suite with:
-
-```powershell
-npm test
-```
-
-You can also try one-line programs in the REPL:
-
-```powershell
-node src/cli.js --repl
-```
-
-## Basic Program Structure
-
-A basic program is usually written in this order:
-
-1. Comments that describe the program.
-2. Variable declarations.
-3. Calculations or function definitions.
-4. Output and control-flow statements.
-
-```asm
-# ১. চলক
-সংখ্যা দাম = ৫০
-সংখ্যা পৰিমাণ = ৩
-
-# ২. গণনা
-সংখ্যা মুঠ = দাম * পৰিমাণ
-
-# ৩. ফলাফল
-লিখা "মুঠ দাম: " + মুঠ
-```
-
-Output:
-
-```text
-মুঠ দাম: 150
-```
-
-Comments start with `#`. Blank lines are ignored. Names may contain Assamese letters, English letters, digits after the first character, and underscores.
-
-## Hello World
-
-```asm
-লিখা "নমস্কাৰ বিশ্ব!"
-```
-
-Comments begin with `#` and continue to the end of the line.
-
-The complete Hello World example is:
-
-```asm
-লিখা "নমস্কাৰ বিশ্ব!"
-লিখা "অসমীয়া ভাষালৈ স্বাগতম!"
-
-সংখ্যা বয়স = ২৫
-বাক্য নাম = "ইঞ্জিনিয়াৰ পঞ্চানন নাথ"
-লিখা "মোৰ নাম " + নাম + " আৰু বয়স " + বয়স
-```
-
-## Variables
-
-Variables use a type keyword followed by a name. Assamese and ASCII names are both supported.
-
-```asm
-সংখ্যা বয়স = ২৫
-বাক্য নাম = "অসম"
-বুলিয়ান শুদ্ধ = সত্য
-তালিকা ফল = ["আম", "কল"]
-```
-
-Values can be changed with assignment:
-
-```asm
-বয়স = বয়স + ১
-```
-
-The assignment name must already be declared:
-
-```asm
-সংখ্যা গণক = ১
-গণক = গণক + ১
-লিখা গণক
-```
-
-Assamese digits (`০১২৩৪৫৬৭৮৯`) and ASCII digits are supported.
-
-## Data Types
-
-| Keyword | Meaning | Example |
-| --- | --- | --- |
-| `সংখ্যা` | Number | `সংখ্যা x = ১০` |
-| `বাক্য` | String | `বাক্য নাম = "অসম"` |
-| `বুলিয়ান` | Boolean | `বুলিয়ান ঠিক = সত্য` |
-| `তালিকা` | Array/list | `তালিকা সংখ্যা = [১, ২, ৩]` |
-| `খালি` | Null value | `লিখা খালি` |
-
-Boolean literals are `সত্য` and `মিছা`.
-
-## Operators
-
-### Arithmetic
-
-```asm
-লিখা ৫ + ৩
-লিখা ৫ - ৩
-লিখা ৫ * ৩
-লিখা ৬ / ২
-লিখা -৫
-```
-
-`+` also joins values when either operand is a string.
-
-```asm
-সংখ্যা a = ১০
-সংখ্যা b = ২০
-
-লিখা a + b
-লিখা b - a
-লিখা a * b
-লিখা b / a
-লিখা "যোগফল: " + (a + b)
-```
-
-Output:
-
-```text
-30
-10
-200
-2
-যোগফল: 30
-```
-
-Arithmetic precedence follows the usual order: multiplication and division happen before addition and subtraction. Use parentheses when you want to make the order explicit.
-
-### Comparison and Logic
-
-```asm
-লিখা ৫ == ৫
-লিখা ৫ != ৩
-লিখা ৫ > ৩
-লিখা ৫ >= ৫
-লিখা ৩ < ৫
-লিখা ৩ <= ৫
-লিখা সত্য আৰু মিছা
-লিখা সত্য বা মিছা
-লিখা নহয় মিছা
-```
-
-Comparison and logical expressions produce `সত্য` or `মিছা` and are commonly used in conditions.
-
-## Control Flow
-
-`থাকিলে` ends an `যদি` condition. Every conditional block ends with `শেষ`.
-
-```asm
-যদি বয়স >= ১৮ থাকিলে
-	লিখা "প্ৰাপ্তবয়স্ক"
-নহলে যদি বয়স >= ১৩ থাকিলে
-	লিখা "কিশোৰ"
-নহলে
-	লিখা "শিশু"
+```asb
+কাজ মূল(পূৰ্ণ মুঠ, বাক্য* আৰ্গুমেণ্ট) -> পূৰ্ণ
+    প্ৰতিবাৰ i = ১ লৈকে মুঠ - ১
+        লিখা আৰ্গুমেণ্ট[i]
+    শেষ
+    উভতি ০
 শেষ
 ```
 
-The condition is evaluated before the block runs. Only the matching branch is executed.
-
-## Loops
-
-### While loop
-
-```asm
-সংখ্যা i = ১
-যেতিয়া i <= ৩
-	লিখা i
-	i = i + ১
-শেষ
+```bash
+node src/cli.js prog.asb -- ক খ
 ```
 
-### Range loop
+## ১৩. সাধাৰণ ভুল
 
-`প্ৰতিবাৰ` counts inclusively from the starting number to the ending number.
+| ভুল | শুদ্ধ |
+| --- | --- |
+| `লিখা "ফল: " + x` | `লিখা "ফল:", x` |
+| `পূৰ্ণ i = ২.৫` | `পূৰ্ণ i = ২.৫ হিচাপে পূৰ্ণ` বা `দশমিক i = ২.৫` |
+| `যদি x > ৫` (থাকিলে নাই) | `যদি x > ৫ থাকিলে` |
+| `p.x` (p সূচক) | `p->x` |
+| `যদি a == "হয়" থাকিলে` (বাক্য) | `যদি তুলনা(a, "হয়") == ০ থাকিলে` |
 
-```asm
-প্ৰতিবাৰ i = ১ লৈকে ৫
-	লিখা i
-শেষ
-```
-
-The current range form increments by one and supports ascending ranges.
-
-The loop variable is declared by the loop and can be used inside its body. The ending number is included.
-
-## Functions
-
-Functions can use optional type keywords before parameter names and return values with `উভতি`.
-
-```asm
-কাজ যোগ(সংখ্যা a, সংখ্যা b)
-	উভতি a + b
-শেষ
-
-লিখা যোগ(২, ৩)
-```
-
-Function syntax:
-
-```text
-কাজ name(parameter1, parameter2)
-	statements
-	উভতি value
-শেষ
-```
-
-Parameters may optionally have a type keyword. A function without `উভতি` returns `খালি`.
-
-Functions can call themselves or another function:
-
-```asm
-কাজ ফেক্ট(সংখ্যা n)
-	যদি n <= ১ থাকিলে
-		উভতি ১
-	নহলে
-		উভতি n * ফেক্ট(n - ১)
-	শেষ
-শেষ
-
-লিখা ফেক্ট(৫)
-```
-
-## Arrays
-
-Array indexes start at zero.
-
-```asm
-তালিকা ফল = ["আম", "কল", "লিচু"]
-লিখা ফল[০]
-
-ফল[১] = "কমলা"
-লিখা ফল[১]
-```
-
-Indexes must be valid integer positions.
-
-List values can be numbers, strings, booleans, or expressions:
-
-```asm
-তালিকা মানসমূহ = [১, ২, ৩]
-লিখা মানসমূহ[০] + মানসমূহ[২]
-মানসমূহ[১] = ১০
-লিখা মানসমূহ[১]
-```
-
-## Built-in Functions
-
-### `দৈৰ্ঘ্য(value)`
-
-Returns the length of a string or array:
-
-```asm
-লিখা দৈৰ্ঘ্য("অসমীয়া")
-তালিকা ফল = [১, ২, ৩]
-লিখা দৈৰ্ঘ্য(ফল)
-```
-
-### `পঢ়া()`
-
-Reads input through the runtime input provider:
-
-```asm
-বাক্য নাম = পঢ়া()
-লিখা নাম
-```
-
-For Node.js, provide input through the JavaScript API:
-
-```js
-const AsomiyaBhasha = require('./src');
-const asomiya = new AsomiyaBhasha({ input: () => 'অসম' });
-console.log(asomiya.run('লিখা পঢ়া()').output);
-```
-
-The browser demo currently uses its own limited evaluator and does not yet share every feature of the canonical interpreter.
+কম্পাইলাৰে প্ৰতিটো ভুলত শাৰী, স্তম্ভ আৰু `^` চিন দি দেখুৱায়।
