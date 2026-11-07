@@ -1,8 +1,8 @@
-# Asomiya Bhasha 2.0 — Language Specification
+# Asomiya Bhasha 2.1 — Language Specification
 
-**অসমীয়া ভাষা ২.০ — ভাষাৰ নিৰ্দিষ্টকৰণ**
+**অসমীয়া ভাষা ২.১ — ভাষাৰ নিৰ্দিষ্টকৰণ**
 
-Version 2.0.1 · Reference implementation: the compiler in `src/` of [PanchananNath/Asomiya_Bhasha](https://github.com/PanchananNath/Asomiya_Bhasha)
+Version 2.1.0 · Reference implementation: the compiler in `src/` of [PanchananNath/Asomiya_Bhasha](https://github.com/PanchananNath/Asomiya_Bhasha)
 
 This document defines the language: its characters and tokens, its grammar, its types and conversions, what each declaration, statement and expression means, the standard library, and the diagnostics the compiler produces. Where this document and the reference compiler disagree, that is a bug in one of them and should be reported.
 
@@ -21,7 +21,7 @@ Assamese terms appear with an English gloss on first use. Code examples are in A
 7. [Expressions](#7-expressions)
 8. [Output formatting](#8-output-formatting)
 9. [Standard library](#9-standard-library)
-10. [Translation to C](#10-translation-to-c)
+10. [Code generation: C, LLVM IR and WebAssembly](#10-code-generation-c-llvm-ir-and-webassembly)
 11. [Diagnostics](#11-diagnostics)
 12. [Undefined behaviour and differences from C](#12-undefined-behaviour-and-differences-from-c)
 
@@ -29,7 +29,7 @@ Assamese terms appear with an English gloss on first use. Code examples are in A
 
 ## 1. Overview
 
-Asomiya Bhasha 2.0 is a statically typed, compiled, imperative language with the expressive power of C11. A program is one or more UTF-8 source files (extension `.asb`). The compiler checks the whole program, translates it to a single C11 translation unit, and a C compiler (gcc or clang) produces a native executable.
+Asomiya Bhasha 2.1 is a statically typed, compiled, imperative language with the expressive power of C11. A program is one or more UTF-8 source files (extension `.asb`). The compiler checks the whole program and then generates code with one of three back ends (§10): C11 for gcc or clang (the default), LLVM IR for clang, or a WebAssembly module that runs in a browser or in Node.js. The language is the same for all three; §10.3 lists the few places where the WebAssembly target differs.
 
 Design rules that differ from C are deliberate and few:
 
@@ -437,6 +437,8 @@ puts("C-ৰ puts")
 
 `বাহিৰৰ কাজ` declares a C function. The string after `=` is its C name; without it the Asomiya name is used. Parameter names are optional. `...` makes the function variadic; extra arguments are checked only for not being structs. If the program has no `চি_অন্তৰ্ভুক্ত` and the function is not declared by the standard C headers the runtime includes, the compiler emits an `extern` prototype; otherwise the header supplies it. Libraries other than the C standard library and `libm` must be linked by building the generated C yourself (`asomiya c prog.asb -o prog.c`, then `cc prog.c -lfoo`).
 
+The LLVM back end declares every external function from its `বাহিৰৰ কাজ` signature (headers are not read), so a name that is only a C macro cannot be called there, and it cannot pass or return a structure by value to C. The WebAssembly back end can call only the C functions its host provides (§10.3); naming any other one in a call is a compile-time error that suggests `--backend c`.
+
 ---
 
 ## 6. Statements
@@ -497,7 +499,7 @@ puts("C-ৰ puts")
 
 ### 7.8 `আকাৰ`, `দৈৰ্ঘ্য`, `নতুন`
 
-- `আকাৰ(T)` or `আকাৰ(expr)` gives the size in bytes, as `পূ৬৪`. The expression is not evaluated.
+- `আকাৰ(T)` or `আকাৰ(expr)` gives the size in bytes, as `পূ৬৪`. The expression is not evaluated. Sizes follow the C ABI of the target: pointers are 8 bytes on 64-bit native targets and 4 bytes on WebAssembly, so `আকাৰ` of a pointer, or of a structure containing pointers, differs between them.
 - `দৈৰ্ঘ্য(x)` gives, as `পূ৬৪`: for an array other than `আখৰ[]`, its number of elements (a constant); for `বাক্য` or `আখৰ[]`, the number of bytes before the terminating NUL.
 - `নতুন(T)` allocates one zero-filled `T` on the heap and returns `T*`; `নতুন(T, n)` allocates `n` of them. Free the memory with `মুকলি(p)`. On failure the result is `খালি`.
 
@@ -596,9 +598,20 @@ Strings returned by `পঢ়া`, `ফাইলৰ_শাৰী`, `বাক�
 
 ---
 
-## 10. Translation to C
+## 10. Code generation: C, LLVM IR and WebAssembly
 
-This section is informative: it describes how the reference compiler works, not requirements on programs.
+This section is informative: it describes how the reference compiler works, not requirements on programs. The back end is chosen with `--backend c|llvm|wasm` (default `c`); every back end passes the same test suite with identical output.
+
+| | C (default) | LLVM IR | WebAssembly |
+| --- | --- | --- | --- |
+| Command | `asomiya run prog.asb` | `asomiya run --backend llvm prog.asb` | `asomiya run --backend wasm prog.asb` |
+| See the code | `asomiya c prog.asb` | `asomiya ll prog.asb` | `asomiya wasm prog.asb` → `prog.wasm` |
+| Needs | gcc or clang | clang 15+ and gcc or clang | Node.js 16+ or a browser |
+| Output | native executable | native executable | `.wasm` module + JavaScript host |
+| Debugging | `-g` (C lines) | `-g`: DWARF with Assamese names, `.asb` lines | Assamese run-time error messages |
+| Pointer size | 8 | 8 | 4 |
+
+### 10.1 C
 
 - The output is one C11 file: a header comment, the runtime (§9 helpers, all `static inline`), `#include`s from `চি_অন্তৰ্ভুক্ত`, `typedef`s for structures and unions, enumerations, structure bodies in dependency order, `extern` prototypes, function prototypes, globals, function bodies, and `main`.
 - Every user name `x` becomes `a_x`, so it can never clash with a C keyword or library name. Assamese letters stay as UTF-8 (gcc ≥ 10 and clang accept them); `--ascii-names` writes `_uXXXX_` instead. External functions keep their C names.
@@ -611,11 +624,40 @@ This section is informative: it describes how the reference compiler works, not 
 ```text
 $ asomiya c examples/hello.asb | tail -12
 int main(int argc, char **argv) {
-    (void)argc; (void)argv;
+    asb_rt_init(&argc, &argv);
     asb_rt_print_str("নমস্কাৰ বিশ্ব!");
     asb_rt_nl();
     …
 ```
+
+### 10.2 LLVM IR
+
+- The output is one textual LLVM IR module using opaque pointers (LLVM 15 or newer). No target triple is written; clang supplies the target.
+- Structures become named LLVM struct types; a union becomes a struct holding its most-aligned member plus padding bytes, so sizes and offsets match C. `বুলিয়ান` is `i1` in registers and `i8` in memory.
+- Every local variable and parameter gets an `alloca` in the entry block; optimisation (`-O1` and up) turns them into registers. Conversions are explicit instructions (`sext`, `zext`, `trunc`, `sitofp`, `fptosi`, …) following §4. `আৰু` / `বা` and `?:` become branches with `phi`; `বাছক` becomes an LLVM `switch`. Signed overflow wraps (no `nsw`), so the optimiser does not exploit it.
+- User functions are `internal` and named `a_…` with Assamese letters written `_uXXXX_`; `main` is the entry point. Small integer parameters carry `signext`/`zeroext` as the C ABI requires, so calls into C and callbacks from C (for example `qsort`) are compatible.
+- The runtime (§9) is compiled from C as a separate file with external linkage. The build is: `clang -c -O2 prog.ll` with the C compiler's target triple, then `cc prog.o asb_runtime.c -lm`. This also works with MinGW on Windows.
+- With `-g` the module carries DWARF: a compile unit, a `DISubprogram` per function, a `DILocation` on every instruction, `DILocalVariable` records for parameters and locals, global variable records, and full type descriptions (structures with field offsets, unions, enumerations, arrays, pointers, function types) — all with their Assamese names. gdb and lldb can set breakpoints by Assamese function name or `file.asb:line`, step through the source, and print variables and structures.
+
+```text
+$ asomiya ll examples/hello.asb
+define i32 @main(i32 %argc, ptr %argv) {
+entry:
+  …
+  call void @asb_rt_print_str(ptr @.str.0)
+  call void @asb_rt_nl()
+```
+
+### 10.3 WebAssembly
+
+- The compiler writes the WebAssembly binary itself; no external tool is involved, so it runs in the browser playground too. Run with `asomiya run --backend wasm`, or build `prog.wasm` with `asomiya wasm` and run it later with the JavaScript API (`runWasmFile`).
+- **Memory.** wasm32: pointers and `ফাইল*` are 4 bytes and `আকাৰ` reports wasm32 sizes. Addresses `0 … 1023` are never used, string literals and globals follow, then an 8 MiB stack, then the heap.
+- **Values.** Scalar locals whose address is never taken are WebAssembly locals; arrays, structures and address-taken variables live in the function's stack frame. Structures are passed as a pointer to a copy and returned through a hidden destination pointer. Function pointers are table indices.
+- **Host.** Printing, input, `malloc`/`free`, files and the C library are provided by a JavaScript host (`src/wasm_host.js`) that runs unchanged in Node.js and browsers. It implements the whole standard library of §9 and these C functions for `বাহিৰৰ কাজ`: `printf sprintf snprintf fprintf puts putchar getchar fopen fclose fputs fputc fgetc fgets fflush`, `malloc calloc realloc free memcpy memmove memset memcmp`, `strlen strcmp strncmp strcpy strncpy strcat strncat strchr strrchr strstr atoi atol atoll atof strtol strtod`, `toupper tolower isdigit isalpha isalnum isspace isupper islower isxdigit ispunct abs labs llabs`, `sqrt pow fabs sin cos tan asin acos atan atan2 exp log log10 log2 floor ceil trunc round fmod hypot cbrt sinh cosh tanh fmin fmax`, `rand srand time clock exit abort getenv system qsort bsearch`. `rand` produces the same sequence as glibc.
+- **Files.** In Node.js, `খোলা` opens real files. In the browser, files live in memory for the duration of one run.
+- **Run-time checks.** Unlike the native back ends, the WebAssembly target stops with an Assamese message (and exit status ১) instead of crashing silently when the program uses a `খালি` or tiny pointer, divides an integer by zero, recurses until the stack is exhausted, calls a `খালি` function pointer, frees memory twice or frees a pointer that did not come from the heap, or touches memory outside the module. Array indices inside valid memory are still not checked.
+- **Time limit.** `asomiya run --backend wasm` and the test suite run the program in a child process so a time limit can stop it; the playground stops a program after 10 seconds.
+- `%p` prints `0x…` addresses of the wasm memory; there is no `stdin`/`stdout` `ফাইল*` in any back end.
 
 ---
 
@@ -680,11 +722,11 @@ If the C compiler fails on generated code, the CLI prints its output under `C �
 
 ## 12. Undefined behaviour and differences from C
 
-Asomiya Bhasha 2.0 inherits C's run-time model. The following are **not** checked at run time and have undefined behaviour, exactly as in C: reading or writing outside an array or allocation, dereferencing `খালি` or a freed pointer, freeing twice, signed integer overflow, integer division by zero, shifting by a negative amount or by at least the width of the type, and reading a union field other than the one last written (the reference compiler gives C's result).
+Asomiya Bhasha inherits C's run-time model. With the C and LLVM back ends, the following are **not** checked at run time and have undefined behaviour, exactly as in C: reading or writing outside an array or allocation, dereferencing `খালি` or a freed pointer, freeing twice, signed integer overflow, integer division by zero, shifting by a negative amount or by at least the width of the type, and reading a union field other than the one last written (the reference compiler gives C's result). The WebAssembly back end reports several of these with an Assamese message instead (§10.3), but programs must not rely on that.
 
 Differences from C, all compile-time:
 
-| C | Asomiya Bhasha 2.0 |
+| C | Asomiya Bhasha 2.1 |
 | --- | --- |
 | uninitialised locals hold garbage | every variable starts at zero |
 | `double` → `int` converts silently | requires `হিচাপে` |

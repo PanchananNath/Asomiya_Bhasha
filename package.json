@@ -1,7 +1,7 @@
 {
   "name": "asomiya-bhasha",
-  "version": "2.0.1",
-  "description": "Asomiya Bhasha (অসমীয়া ভাষা) — a statically typed, C-level programming language written in Assamese script, compiled to native code through C",
+  "version": "2.1.0",
+  "description": "Asomiya Bhasha (অসমীয়া ভাষা) — a statically typed, C-level programming language written in Assamese script, compiled to native code through C or LLVM, or to WebAssembly",
   "main": "src/index.js",
   "bin": {
     "asomiya": "./src/cli.js"
@@ -19,8 +19,11 @@
     "test:quick": "node tests/test.js --quick",
     "test:clang": "node tests/test.js --cc clang",
     "build": "npm run build:web",
-    "build:web": "esbuild src/browser.js --bundle --format=iife --global-name=AsomiyaRuntime --outfile=public/runtime.js",
-    "web": "npm run build:web && live-server public"
+    "build:web": "esbuild src/browser.js --bundle --format=iife --global-name=AsomiyaRuntime --outfile=public/runtime.js && esbuild src/wasm_worker.js --bundle --format=iife --outfile=public/worker.js",
+    "web": "npm run build:web && live-server public",
+    "test:llvm": "node tests/test.js --backend llvm",
+    "test:wasm": "node tests/test.js --backend wasm",
+    "test:all": "node tests/test.js && node tests/test.js --backend llvm && node tests/test.js --backend wasm"
   },
   "keywords": [
     "assamese",
@@ -30,7 +33,10 @@
     "c",
     "systems-programming",
     "mother-tongue",
-    "education"
+    "education",
+    "llvm",
+    "webassembly",
+    "wasm"
   ],
   "author": "Er Panchanan Nath",
   "license": "MIT",

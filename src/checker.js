@@ -265,9 +265,12 @@ class Checker {
         const savedFn = this.fn, savedLoop = this.loopDepth, savedSwitch = this.switchDepth;
         this.fn = f; this.loopDepth = 0; this.switchDepth = 0;
         const scope = new Scope(this.global, 'function');
+        f.paramSyms = [];
         for (const p of f.params) {
             if (p.type.k === 'void') this.error("পেৰামিটাৰৰ প্ৰকাৰ 'শূন্য' হ'ব নোৱাৰে", p.pos);
-            this.declare(scope, { kind: 'var', name: p.name, type: p.type, isParam: true }, p.pos);
+            const sym = { kind: 'var', name: p.name, type: p.type, isParam: true };
+            f.paramSyms.push(sym);
+            this.declare(scope, sym, p.pos);
         }
         this.checkBlock(f.node.body, scope, true);
         if (!f.ret) f.ret = T.void;

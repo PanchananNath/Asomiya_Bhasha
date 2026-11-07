@@ -9,10 +9,11 @@ const { tokenize } = require('./lexer');
 const { parse } = require('./parser');
 const { Checker } = require('./checker');
 const { CGen } = require('./codegen_c');
+const { LLGen, LLVMUnsupported } = require('./codegen_llvm');
 const { Diagnostics, CompileError } = require('./diagnostics');
 const { PRELUDE } = require('./runtime');
 
-const VERSION = '2.0.1';
+const VERSION = '2.1.0';
 let preludeCache = null;
 
 function parsePrelude() {
@@ -21,8 +22,9 @@ function parsePrelude() {
 }
 
 /**
- * Compile Asomiya source to C.
- * @returns {{ok: boolean, c?: string, diagnostics: Diagnostics, ast?: object}}
+ * Compile Asomiya source.
+ *   opts.backend: 'c' (default) → result.c;  'llvm' → result.ll (and result.c is not made)
+ * @returns {{ok: boolean, c?: string, ll?: string, diagnostics: Diagnostics, model?: object}}
  */
 function compile(source, opts = {}) {
     const file = opts.file || '<উৎস>';
@@ -38,14 +40,23 @@ function compile(source, opts = {}) {
     const checker = new Checker(diag);
     const model = checker.check(parsePrelude(), items);
     if (diag.hasErrors()) return { ok: false, diagnostics: diag };
-    let c;
+    const backend = opts.backend || 'c';
+    const out = { ok: true, diagnostics: diag, model, backend };
     try {
-        c = new CGen(model, { asciiNames: opts.asciiNames, asciiDigits: opts.asciiDigits, file }).generate();
+        if (backend === 'llvm') out.ll = new LLGen(model, { file, dir: opts.dir, debug: opts.debug }).generate();
+        else if (backend === 'wasm') {
+            const { WasmGen } = require('./codegen_wasm');
+            const w = new WasmGen(model, { file, asciiDigits: opts.asciiDigits }).generate();
+            out.wasm = w.bytes;
+            out.wasmInfo = w.info;
+        } else out.c = new CGen(model, { asciiNames: opts.asciiNames, asciiDigits: opts.asciiDigits, file }).generate();
     } catch (e) {
+        if (e instanceof LLVMUnsupported || (e && e.isBackendLimit)) { diag.error(e.message, Object.assign({ file }, e.pos)); return { ok: false, diagnostics: diag }; }
         diag.error(`কম্পাইলাৰৰ আভ্যন্তৰীণ ত্ৰুটি (এইটো কম্পাইলাৰৰ bug; অনুগ্ৰহ কৰি GitHub-ত জনাওক): ${e.message}`, { line: 1, col: 1, file });
+        if (typeof process !== 'undefined' && process.env && process.env.ASB_DEBUG) throw e;
         return { ok: false, diagnostics: diag };
     }
-    return { ok: true, c, diagnostics: diag, model };
+    return out;
 }
 
 function loadFile(source, file, opts, diag, seen, isImport) {

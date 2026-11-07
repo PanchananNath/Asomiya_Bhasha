@@ -17,10 +17,12 @@ const RUNTIME_C = String.raw`/* ---- Asomiya Bhasha runtime (asb_rt) ---- */
 #ifndef ASB_ASCII_DIGITS
 #define ASB_ASCII_DIGITS 0
 #endif
+#ifndef ASB_RT
 #if defined(__GNUC__) || defined(__clang__)
 #define ASB_RT static inline __attribute__((unused))
 #else
 #define ASB_RT static inline
+#endif
 #endif
 
 /* Write s to stdout, turning ASCII digits into Assamese digits ০-৯ (U+09E6-U+09EF). */
@@ -199,4 +201,9 @@ const HEADER_SYMBOLS = new Set(('printf fprintf sprintf snprintf puts fputs putc
     'strlen strcmp strncmp strcpy strncpy strcat strncat strchr strrchr strstr memcpy memmove memset memcmp ' +
     'sqrt pow fabs sin cos tan asin acos atan atan2 exp log log10 log2 floor ceil round fmod hypot time clock').split(' '));
 
-module.exports = { RUNTIME_C, PRELUDE, HEADER_SYMBOLS };
+/** The runtime as a separate C file with external linkage (linked with LLVM-built programs). */
+function runtimeLibrary(opts = {}) {
+    return `/* অসমীয়া ভাষা runtime — LLVM back end-ৰ বাবে */\n#define ASB_ASCII_DIGITS ${opts.asciiDigits ? 1 : 0}\n#define ASB_RT\n${RUNTIME_C}`;
+}
+
+module.exports = { RUNTIME_C, PRELUDE, HEADER_SYMBOLS, runtimeLibrary };

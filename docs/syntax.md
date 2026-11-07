@@ -1,4 +1,4 @@
-# অসমীয়া ভাষা ২.০ — শিকিবলৈ সহায় (Tutorial)
+# অসমীয়া ভাষা ২.১ — শিকিবলৈ সহায় (Tutorial)
 
 এই গাইডত ভাষাটোৰ মূল কথাবোৰ উদাহৰণসহ দিয়া হৈছে। সম্পূৰ্ণ নিয়ম আৰু ব্যাকৰণ (grammar) [spec.md](spec.md)-ত আছে।
 
@@ -7,6 +7,8 @@
 ```bash
 node src/cli.js মোৰ_প্ৰ'গ্ৰাম.asb
 ```
+
+C কম্পাইলাৰ নাই নেকি? WebAssembly হিচাপে Node.js-তে চলাওক — `node src/cli.js run --backend wasm মোৰ_প্ৰ'গ্ৰাম.asb` — বা playground-ত ▶ চলাওক টিপক।
 
 ## ১. প্ৰথম প্ৰ'গ্ৰাম
 
@@ -262,3 +264,23 @@ node src/cli.js prog.asb -- ক খ
 | `যদি a == "হয়" থাকিলে` (বাক্য) | `যদি তুলনা(a, "হয়") == ০ থাকিলে` |
 
 কম্পাইলাৰে প্ৰতিটো ভুলত শাৰী, স্তম্ভ আৰু `^` চিন দি দেখুৱায়।
+
+## ১৪. তিনিটা back end
+
+একেটা প্ৰ'গ্ৰাম তিনি ধৰণে চলাব পাৰি; ফল একেই:
+
+```bash
+node src/cli.js run prog.asb                     # C → gcc/clang (মূল)
+node src/cli.js run --backend llvm prog.asb      # LLVM IR → clang
+node src/cli.js run --backend wasm prog.asb      # WebAssembly → Node.js (C কম্পাইলাৰ নালাগে)
+```
+
+ভুল বিচাৰিবলৈ debugger ব্যৱহাৰ কৰক:
+
+```bash
+node src/cli.js build --backend llvm -g -O0 prog.asb
+gdb ./prog          # (gdb) break কাজৰ_নাম   (gdb) run   (gdb) next   (gdb) print চলক
+```
+
+WebAssembly-ত সূচক ৪ বাইটৰ, গতিকে `আকাৰ(পূৰ্ণ*)` ৪ হয় (native-ত ৮)। খালি সূচক ব্যৱহাৰ কৰিলে বা শূন্যৰে হৰণ কৰিলে প্ৰ'গ্ৰামটো অসমীয়াত ভুল দেখুৱাই ৰয়।
+
