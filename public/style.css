@@ -693,3 +693,13 @@ footer { margin-top: 28px; padding: 8px; color: var(--muted); font-size: .78rem;
     .typing-row { gap: 4px; }
     .typing-key { min-width: 30px; padding: 3px 6px; }
 }
+/* v2.0 compiler output */
+.output-console pre { margin: 8px 0 0; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: .82rem; line-height: 1.55; }
+.output-console pre.c-code { max-height: 420px; overflow: auto; padding: 12px; border-radius: 8px; background: rgba(255,255,255,.04); color: #cfe7de; }
+.output-console pre.expected { padding: 10px 12px; border-left: 3px solid #68d391; background: rgba(104,211,145,.08); color: #e6f6ee; }
+.output-console pre.diag { color: #fbb6b6; }
+.output-console pre.diag.warn { color: #f6e05e; }
+.output-console .output-label { margin-top: 14px; color: #8da6a0; font-size: .8rem; }
+.output-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.small-btn { padding: 6px 12px; font-size: .78rem; background: #25434a; color: #d9eee5; }
+.small-btn:hover { background: #2f5860; }

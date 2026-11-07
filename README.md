@@ -1,254 +1,162 @@
-# অসমীয়া ভাষা (Asomiya Bhasha)
+# অসমীয়া ভাষা (Asomiya Bhasha) 2.0
 
 
 <img width="254" height="254" alt="logo" src="https://github.com/user-attachments/assets/53ece51a-409f-49f7-9a58-40ef8b11c380" />
 
-অসমীয়া নাম, কীৱৰ্ড আৰু সংখ্যাৰে লিখিব পৰা এটা সৰু শিক্ষামূলক programming language prototype। Runtime-টো Node.js-ত চলাকৈ আৰু lexer, parser, AST আৰু interpreter-ৰে সংগঠিত।
+অসমীয়া লিপিত লিখা, **C-ৰ সমান ক্ষমতাৰ** এটা statically typed, compiled programming language। কম্পাইলাৰে অসমীয়া ক'ডক C11-লৈ ৰূপান্তৰ কৰে আৰু gcc বা clang-এ তাৰ পৰা native executable তৈয়াৰ কৰে।
 
 **Developed by:** Er Panchanan Nath  
 **Open source project by:** Er Panchanan Nath  
 **Original copyright:** Er Panchanan Nath
 
-## Introduction
+```asb
+গঠন নোড
+    পূৰ্ণ মান
+    নোড* পিছৰ
+শেষ
 
-**Asomiya Bhasha** is a small educational programming language prototype designed to allow programming concepts to be explored using Assamese identifiers, keywords, and numerals.
+নোড* তালিকা = খালি
+প্ৰতিবাৰ i = ১ লৈকে ৫
+    নোড* ন = নতুন(নোড)
+    ন->মান = i * i
+    ন->পিছৰ = তালিকা
+    তালিকা = ন
+শেষ
 
-The runtime is implemented in Node.js and follows a simple:
-
-**lexer → parser → AST → interpreter**
-
-architecture.
-
-The **Node.js runtime is the canonical interpreter**. The web playground uses a generated browser bundle of the same runtime, keeping language behavior consistent between CLI and browser execution.
-
----
-
-## Current Status
-
-The core interpreter milestone is complete.
-
-The language currently supports:
-
-* Assamese and ASCII identifiers
-* Underscores in identifiers
-* Assamese and ASCII numerals
-* Numbers, strings, booleans, and lists
-* `লিখা` output statement
-* Variable declarations
-* Variable assignment
-* Comments
-* Arithmetic operators
-* Comparison operators
-* Logical operators
-* Unary operators
-* `যদি`, `নহলে`, and `নহলে যদি` conditional statements
-* `যেতিয়া` while loops
-* `প্ৰতিবাৰ চলক = আৰম্ভ লৈকে শেষ` range loops
-* Functions
-* Typed parameters
-* `উভতি` return statements
-* `পঢ়া()` input builtin
-* `দৈৰ্ঘ্য()` builtin
-* Input providers
-* Array indexing
-* List element assignment
-* Command-line interface (CLI)
-* REPL
-* Source-file execution
-* Runnable example programs
-* 100 categorized sample programs
-* Browser playground
-* Searchable samples
-* Assamese on-screen keyboard
-
-> **Important:** The project is still a prototype. The Node.js runtime is the canonical implementation, while the web playground uses a generated browser bundle of the same runtime.
-
----
-
-
-## বৰ্তমানৰ অৱস্থা
-
-- Assamese আৰু ASCII identifier, underscore, আৰু Assamese/ASCII সংখ্যা
-- সংখ্যা, বাক্য, বুলিয়ান আৰু তালিকা
-- `লিখা`, variable declaration, assignment আৰু comments
-- arithmetic, comparison, logical আৰু unary operators
-- `যদি`, `নহলে`, `নহলে যদি`, `যেতিয়া`
-- `প্ৰতিবাৰ চলক = আৰম্ভ লৈকে শেষ` range loop
-- functions, typed parameters, `উভতি`
-- input provider-সহ `পঢ়া()` আৰু `দৈৰ্ঘ্য()` builtin
-- array indexing আৰু list element assignment
-- CLI, REPL, file execution আৰু example programs
-- 100 categorized sample programs for learning and experimentation
-- browser playground with canonical runtime, searchable samples, and an Assamese on-screen keyboard
-
-এইটো এতিয়াও prototype। Node.js runtime-টোৱেই canonical interpreter, আৰু web playground-এ build কৰা একে runtime-ৰ browser bundle ব্যৱহাৰ কৰে।
-
-## প্ৰয়োজনীয়তা
-
-- Node.js 14 বা তাৰ পিছৰ version
-- npm, Node.js-ৰ সৈতে অন্তৰ্ভুক্ত
-- Git, GitHub-ৰ পৰা clone কৰিবলৈ
-
-Node.js version check কৰক:
-
-```powershell
-node --version
-npm --version
+যেতিয়া তালিকা != খালি
+    দেখুওৱা তালিকা->মান
+    নোড* পিছৰ = তালিকা->পিছৰ
+    মুকলি(তালিকা)
+    তালিকা = পিছৰ
+শেষ
+লিখা
 ```
 
-এই project-টো Python project নহয়। JavaScript dependencies-ৰ authoritative source হৈছে `package.json` আৰু `package-lock.json`।
+```text
+$ node src/cli.js list.asb
+২৫ ১৬ ৯ ৪ ১
+```
+
+## What it is
+
+**Asomiya Bhasha 2.0** is a systems programming language whose keywords, identifiers and numerals are Assamese. It has the capabilities of C — fixed-size integer types, floating point, pointers and pointer arithmetic, manual heap memory, arrays, structs, unions, enums, function pointers, separate modules and direct calls into any C library — with a few safety and teaching improvements: every variable starts at zero, implicit float-to-integer conversion is an error, `লিখা` prints numbers in Assamese digits, and all compiler messages are in Assamese with the offending line and a caret.
+
+The compiler is written in JavaScript (Node.js 16+). Its pipeline is:
+
+**source → lexer → parser → AST → type checker → C11 code generator → gcc / clang → native executable**
+
+Version 1 was a tree-walking interpreter for a small dynamically typed language. Version 2 replaces it; see [CHANGELOG.md](CHANGELOG.md) for what changed and how to port v1 programs.
+
+## বৈশিষ্ট্য (features)
+
+| বিষয় | অসমীয়া ভাষা ২.০ |
+| --- | --- |
+| পূৰ্ণ সংখ্যা | `পূৰ্ণ` (৩২-বিট), `পূ৮ পূ১৬ পূ৩২ পূ৬৪`, চিহ্নহীন `ধ৮ ধ১৬ ধ৩২ ধ৬৪` |
+| অন্যান্য প্ৰকাৰ | `দশমিক` (double), `দশমিক৩২`, `আখৰ`, `বুলিয়ান`, `বাক্য`, `শূন্য`, `ফাইল` |
+| গঠিত প্ৰকাৰ | সূচক `T*`, তালিকা `T[n]`, `গঠন`, `সংযোগ`, `গণনা`, `প্ৰকাৰ` (উপনাম), কাজৰ সূচক `কাজ(T) -> R` |
+| নিয়ন্ত্ৰণ | `যদি … থাকিলে / নহলে যদি / নহলে / শেষ`, `বাছক / ক্ষেত্ৰ / অন্যথা`, `যেতিয়া`, `প্ৰতিবাৰ … লৈকে … ক্ৰমে`, C-ধৰণৰ `প্ৰতিবাৰ (…; …; …)`, `কৰা … শেষ যেতিয়া`, `ভাঙা`, `আগবাঢ়া` |
+| অপাৰেটৰ | C-ৰ সকলো: `+ - * / %`, `& \| ^ ~ << >>`, `== != < > <= >=`, `আৰু বা নহয়` (`&& \|\| !`), `?:`, `= += -= …`, `++ --`, `& *`, `. ->`, `হিচাপে` (cast), `আকাৰ` (sizeof) |
+| স্মৃতি | `নতুন(T)`, `নতুন(T, n)`, `মুকলি(p)`, `সংৰক্ষণ`, `পুনৰ_সংৰক্ষণ`, `প্ৰতিলিপি`, `ভৰোৱা` |
+| মডিউল আৰু C | `আমদানি "ফাইল.asb"`, `বাহিৰৰ কাজ … = "c_name"`, `চি_অন্তৰ্ভুক্ত "<header.h>"` |
+| আউটপুট | `লিখা` (অসমীয়া অংক, নতুন শাৰী), `দেখুওৱা` (একে শাৰী), `ছপা` (C-ৰ printf) |
+| প্ৰৱেশ বিন্দু | শীৰ্ষ স্তৰৰ বিবৃতিৰে script, বা `কাজ মূল(পূৰ্ণ n, বাক্য* আৰ্গ) -> পূৰ্ণ` |
+
+The full language definition — lexical rules, EBNF grammar, type system, conversions, semantics, the standard library and every diagnostic — is in **[docs/spec.md](docs/spec.md)**. A shorter tutorial is in [docs/syntax.md](docs/syntax.md).
+
+## প্ৰয়োজনীয়তা (requirements)
+
+- Node.js 16 বা তাৰ পিছৰ
+- এটা C11 কম্পাইলাৰ: gcc 9+ বা clang 10+ (`cc` হিচাপে বা `--cc` দি)
+  - Ubuntu/Debian: `sudo apt install build-essential`
+  - macOS: `xcode-select --install`
+  - Windows: WSL বা MSYS2-ৰ gcc
+- Source files UTF-8-ত save কৰিব লাগে
 
 ## Installation
 
-### Windows আৰু macOS/Linux
-
-Repository clone কৰি project folder-ত যাওক:
-
-```powershell
+```bash
 git clone https://github.com/PanchananNath/Asomiya_Bhasha.git
-cd asomiya-bhasha
-```
-
-Dependencies install কৰক:
-
-```bash
-npm ci
-```
-
-`package-lock.json` নথকা fresh checkout-ত `npm install` ব্যৱহাৰ কৰিব পাৰি। Windows-ত `setup.sh` Bash script-ৰ সলনি ওপৰৰ commands ব্যৱহাৰ কৰক। macOS/Linux-ত optional automated setup:
-
-```bash
-chmod +x setup.sh
-./setup.sh
-```
-
-### Configuration
-
-এই prototype-ৰ বাবে কোনো `.env` file বা external service configuration ৰ প্ৰয়োজন নাই।
-
-- Source files UTF-8 encoding-ত save কৰিব লাগে।
-- CLI-এ local files execute কৰে।
-- `npm run web`-এ `public` folder-ৰ development server `http://localhost:8080`-ত আৰম্ভ কৰে। Port ব্যস্ত থাকিলে `npx live-server public --port=8081` ব্যৱহাৰ কৰক।
-- `পঢ়া()` ব্যৱহাৰ কৰা JavaScript program-ত input provider দিব লাগে; details [docs/syntax.md](docs/syntax.md)-ত আছে।
-
-## Quick Start
-
-```bash
-node src/cli.js examples/hello.asm
+cd Asomiya_Bhasha
+npm install
 npm test
 ```
 
-REPL:
+macOS/Linux-ত `./setup.sh`-এ এই সকলোবোৰ পৰীক্ষা কৰি কৰে আৰু ইচ্ছা কৰিলে `npm link`-ৰে `asomiya` command install কৰে।
+
+## Quick start
 
 ```bash
-node src/cli.js --repl
+node src/cli.js examples/hello.asb                 # compile কৰি চলোৱা
+node src/cli.js build examples/linked_list.asb     # native executable: ./linked_list
+node src/cli.js c examples/structs.asb             # তৈয়াৰ হোৱা C ক'ড চোৱা
+node src/cli.js check myprog.asb                   # কেৱল ভুল পৰীক্ষা
+node src/cli.js -e 'লিখা "ফল:", ২ + ৩ * ৪'          # এশাৰীৰ প্ৰ'গ্ৰাম
+node src/cli.js examples/main_args.asb -- ক খ      # আৰ্গুমেণ্ট দি চলোৱা
 ```
 
-Web demo:
+Options: `--cc gcc|clang`, `-O0`…`-O3`, `-g`, `--ascii-digits` (print 0–9 instead of ০–৯), `--ascii-names` (C output uses `_uXXXX_` names). `npm link`-ৰ পিছত `node src/cli.js`-ৰ সলনি `asomiya` লিখিব পাৰি।
 
-```bash
-npm run web
-```
-
-তাৰ পিছত `http://localhost:8080` খোলক।
-
-Build only the browser runtime bundle:
-
-```bash
-npm run build
-```
-
-The web editor includes an `অসমীয়া টাইপ` keyboard beside the Run button. It inserts Assamese letters, signs, numerals, keywords, spaces, new lines, and backspaces at the current cursor position.
-
-## Reproduce From A Clean System
-
-The following sequence reproduces the current project on a new machine:
-
-```bash
-git clone https://github.com/PanchananNath/Asomiya_Bhasha.git
-cd asomiya-bhasha
-npm ci
-npm test
-node src/cli.js examples/hello.asm
-```
-
-Expected test result:
+A compile error looks like this:
 
 ```text
-22 tests passed
-0 tests failed
+$ node src/cli.js -e $'পূৰ্ণ যোগফল = ০\nযোগফল = যোগফল + "১"'
+<-e>:2:15: ত্ৰুটি: বাক্য '+' দি জোৰা নাযায়; লিখা ক, খ বা যোগ_বাক্য(ক, খ) ব্যৱহাৰ কৰক
+  2 | যোগফল = যোগফল + "১"
+    |               ^
 ```
 
-Run a new program:
+## Playground
 
 ```bash
-node src/cli.js path/to/program.asm
+npm run web          # http://localhost:8080
 ```
 
-Run the web playground:
+A browser has no C compiler, so the playground uses the same compiler to **check your program and show the generated C**. For the 100 built-in samples it also shows the output a native run prints. To run programs, use the CLI.
 
-```bash
-npm run web
-```
-
-The Node.js interpreter is the canonical runtime. The browser playground uses a generated browser bundle of the same lexer, parser, AST, and interpreter, so language behavior stays consistent between CLI and web execution.
-
-
-
-## উদাহৰণ
-
-```asm
-সংখ্যা বয়স = ২৫
-বাক্য নাম = "ইঞ্জিনিয়াৰ পঞ্চানন নাথ"
-
-লিখা "নমস্কাৰ " + নাম
-
-যদি বয়স >= ১৮ থাকিলে
-	লিখা "প্ৰাপ্তবয়স্ক"
-নহলে
-	লিখা "শিশু"
-শেষ
-
-সংখ্যা i = ১
-যেতিয়া i <= ৩
-	লিখা i
-	i = i + ১
-শেষ
-```
-
-Supported keywords include `লিখা`, `সংখ্যা`, `বাক্য`, `বুলিয়ান`, `তালিকা`, `সত্য`, `মিছা`, `যদি`, `নহলে`, `যেতিয়া`, `কাজ`, `উভতি`, `দৈৰ্ঘ্য`, `আৰু`, `বা`, `নহয়`, `খালি`, and `শেষ`.
-
-Detailed syntax notes are in [docs/syntax.md](docs/syntax.md). Runnable samples are in [examples](examples).
-
-Input can be provided through the JavaScript API:
+## JavaScript API
 
 ```js
-const asomiya = new AsomiyaBhasha({ input: () => "অসম" });
-asomiya.run(`বাক্য নাম = পঢ়া()
-লিখা নাম`);
+const asomiya = require('./src/index');
+const { ok, c, diagnostics } = asomiya.compile('লিখা "নমস্কাৰ"');   // C text
+const run = asomiya.run('লিখা ২ + ৩', { input: '' });                // needs gcc/clang
+console.log(run.stdout);                                                // "৫\n"
 ```
 
-## Project Structure
+## Tests
+
+```bash
+npm test               # 193 checks: language features, diagnostics, examples, 100 samples
+npm run test:clang     # the same with clang
+npm run test:quick     # skip the 100-sample sweep
+```
+
+Every check compiles the program, builds it with the C compiler and compares the exact output. The generated C compiles without warnings under `gcc` and `clang` with `-Wall -Wextra -pedantic`.
+
+## Project structure
 
 | Path | Purpose |
 | --- | --- |
-| [src/lexer.js](src/lexer.js) | Source code to tokens |
-| [src/parser.js](src/parser.js) | Tokens to AST |
-| [src/ast.js](src/ast.js) | AST node definitions |
-| [src/interpreter.js](src/interpreter.js) | AST execution |
-| [src/index.js](src/index.js) | JavaScript API and file runner |
-| [src/browser.js](src/browser.js) | Browser runtime entrypoint |
-| [src/cli.js](src/cli.js) | CLI and REPL |
-| [tests/test.js](tests/test.js) | Regression tests and example checks |
-| [examples/catalog.js](examples/catalog.js) | 100 categorized sample programs |
-| [public](public) | Browser playground and generated runtime output |
-| [docs/syntax.md](docs/syntax.md) | Assamese and English syntax guide |
-| [LICENSE](LICENSE) | MIT license and copyright notice |
+| [src/lexer.js](src/lexer.js) | Source text → tokens (NFC normalisation, Assamese digits, keywords) |
+| [src/parser.js](src/parser.js) | Tokens → AST (recursive descent + precedence climbing) |
+| [src/types.js](src/types.js) | Type representation and conversion rules |
+| [src/checker.js](src/checker.js) | Name resolution, type checking, Assamese diagnostics |
+| [src/codegen_c.js](src/codegen_c.js) | Checked AST → C11 |
+| [src/runtime.js](src/runtime.js) | Embedded C runtime and the standard library prelude |
+| [src/compiler.js](src/compiler.js) | Compiler driver (works in Node.js and browsers) |
+| [src/native.js](src/native.js) | Invokes gcc/clang and runs the executable |
+| [src/cli.js](src/cli.js) | `asomiya` command-line tool |
+| [src/index.js](src/index.js) | JavaScript API |
+| [src/browser.js](src/browser.js) | Playground bundle entry point |
+| [examples/](examples) | 14 example programs and the 100-sample catalogue |
+| [tests/](tests) | Test suite and golden outputs |
+| [docs/spec.md](docs/spec.md) | Language specification and grammar |
+| [docs/syntax.md](docs/syntax.md) | Tutorial-style guide |
+| [docs/roadmap.md](docs/roadmap.md) | Stage 2 (LLVM) and Stage 3 (MLIR) plans |
+| [public/](public) | Browser playground |
 
 <img width="5828" height="7291" alt="diagram" src="https://github.com/user-attachments/assets/a17c88c7-d675-42db-acc9-782b1e00743c" />
 
-
-
+*The diagram above shows the version 1 interpreter architecture.*
 
 ## License
 

@@ -1,72 +1,112 @@
-const toAssameseDigits = value => String(value).replace(/[0-9]/g, digit => String.fromCharCode(0x09E6 + Number(digit)));
+'use strict';
+/**
+ * 100 graded sample programs for Asomiya Bhasha 2.0 (10 categories × 10).
+ * Each sample carries the exact output a native run must print; the test
+ * suite compiles and runs every one of them.
+ */
 
+const as = v => String(v).replace(/[0-9]/g, d => String.fromCodePoint(0x09E6 + Number(d)));
 const samples = [];
+const add = (category, title, code, expected) => samples.push({ id: samples.length + 1, category, title, code, expected });
 
-function add(category, title, code) {
-    samples.push({
-        id: samples.length + 1,
-        category,
-        title,
-        code
-    });
-}
+const CATEGORIES = {
+    printing: 'লিখা (output)', variables: 'চলক আৰু প্ৰকাৰ', arithmetic: 'গণনা', logic: 'তুলনা আৰু লজিক',
+    conditions: 'চৰ্ত', loops: 'লুপ', functions: 'কাজ', arrays: 'তালিকা', pointers: 'সূচক আৰু স্মৃতি', structs: 'গঠন',
+};
 
-const greetings = ['নমস্কাৰ', 'স্বাগতম', 'শুভদিন', 'শুভসন্ধ্যা', 'শুভৰাত্ৰি', 'অসমলৈ স্বাগতম', 'আজিৰ দিনটো ভাল', 'আহক শিকোঁ', 'মই কোড লিখোঁ', 'অসমীয়া ভাষা'];
-greetings.forEach((message, index) => {
-    add('printing', `প্ৰিণ্ট ${index + 1}`, `লিখা "${message}!"`);
+// 1. Printing
+['নমস্কাৰ', 'স্বাগতম', 'শুভদিন', 'শুভসন্ধ্যা', 'শুভৰাত্ৰি'].forEach((m, k) =>
+    add('printing', `লিখা ${as(k + 1)}`, `লিখা "${m}, অসম!"`, `${m}, অসম!\n`));
+[[2026, 'বছৰ'], [100, 'নম্বৰ'], [42, 'উত্তৰ'], [7, 'দিন'], [365, 'দিনত এবছৰ']].forEach(([n, w], k) =>
+    add('printing', `লিখা ${as(k + 6)}`, `লিখা "${w}:", ${as(n)}\nলিখা ${as(n)}, "+ ১ =", ${as(n)} + ১`, `${w}: ${as(n)}\n${as(n)} + ১ = ${as(n + 1)}\n`));
+
+// 2. Variables and types
+[['পূৰ্ণ', 'বয়স', 28, as(28)], ['পূ৬৪', 'জনসংখ্যা', 31205576, as(31205576)], ['দশমিক', 'উচ্চতা', 1.75, as('1.75')], ['বুলিয়ান', 'ছাত্ৰ', 'সত্য', 'সত্য'], ['বাক্য', 'চহৰ', '"গুৱাহাটী"', 'গুৱাহাটী']]
+    .forEach(([t, n, v, out], k) => add('variables', `চলক ${as(k + 1)}`, `${t} ${n} = ${typeof v === 'number' ? as(v) : v}\nলিখা "${n} =", ${n}`, `${n} = ${out}\n`));
+[3, 8, 15, 21, 40].forEach((n, k) => add('variables', `চলক ${as(k + 6)}`,
+    `পূৰ্ণ ক = ${as(n)}\nক = ক * ২\nক += ৫\nস্থিৰ পূৰ্ণ সৰ্বোচ্চ = ১০০\nলিখা ক, সৰ্বোচ্চ - ক`, `${as(n * 2 + 5)} ${as(100 - (n * 2 + 5))}\n`));
+
+// 3. Arithmetic
+[[20, 6], [45, 7], [100, 9], [17, 4], [81, 9]].forEach(([a, b], k) => add('arithmetic', `গণনা ${as(k + 1)}`,
+    `পূৰ্ণ a = ${as(a)}, b = ${as(b)}\nলিখা a + b, a - b, a * b\nলিখা "ভাগফল:", a / b, "ভাগশেষ:", a % b`,
+    `${as(a + b)} ${as(a - b)} ${as(a * b)}\nভাগফল: ${as(Math.trunc(a / b))} ভাগশেষ: ${as(a % b)}\n`));
+[[7, 2], [10, 4], [1, 3], [22, 7], [9, 8]].forEach(([a, b], k) => {
+    const q = a / b;
+    add('arithmetic', `গণনা ${as(k + 6)}`, `দশমিক ফল = ${as(a)} হিচাপে দশমিক / ${as(b)}\nলিখা ফল\nলিখা ঘূৰণীয়া(ফল * ১০০) / ১০০`,
+        `${as(Number(q.toPrecision(15)))}\n${as(Math.round(q * 100) / 100)}\n`);
 });
 
-const arithmetic = [
-    ['যোগ', '+', 10, 20], ['বিয়োগ', '-', 30, 8], ['পূৰণ', '*', 6, 7], ['হৰণ', '/', 40, 5],
-    ['যোগ', '+', 12, 18], ['বিয়োগ', '-', 50, 17], ['পূৰণ', '*', 9, 9], ['হৰণ', '/', 81, 9],
-    ['যোগ', '+', 7, 13], ['বিয়োগ', '-', 100, 45], ['পূৰণ', '*', 8, 12], ['হৰণ', '/', 64, 8],
-    ['যোগ', '+', 25, 25], ['বিয়োগ', '-', 90, 30], ['পূৰণ', '*', 11, 3], ['হৰণ', '/', 72, 9],
-    ['যোগ', '+', 14, 16], ['বিয়োগ', '-', 44, 19], ['পূৰণ', '*', 5, 15], ['হৰণ', '/', 100, 10]
-];
-arithmetic.forEach(([name, operator, left, right], index) => {
-    add('math', `গণনা ${index + 1}`, `# ${name}\nলিখা ${toAssameseDigits(left)} ${operator} ${toAssameseDigits(right)}`);
+// 4. Comparison and logic
+[[5, 3], [4, 4], [2, 9], [10, 10], [7, 1]].forEach(([a, b], k) => add('logic', `তুলনা ${as(k + 1)}`,
+    `পূৰ্ণ a = ${as(a)}, b = ${as(b)}\nলিখা a > b, a == b, a != b, a <= b`,
+    `${[a > b, a === b, a !== b, a <= b].map(x => (x ? 'সত্য' : 'মিছা')).join(' ')}\n`));
+[[true, true], [true, false], [false, true], [false, false], [true, true]].forEach(([p, q], k) => {
+    const b = x => (x ? 'সত্য' : 'মিছা');
+    add('logic', `লজিক ${as(k + 6)}`, `বুলিয়ান p = ${b(p)}, q = ${b(q)}\nলিখা p আৰু q, p বা q, নহয় p`, `${b(p && q)} ${b(p || q)} ${b(!p)}\n`);
 });
 
-for (let index = 1; index <= 10; index++) {
-    const value = index * 5;
-    add('variables', `চলক ${index}`, `সংখ্যা মান = ${toAssameseDigits(value)}\nলিখা "মান: " + মান`);
-}
-
-const comparisons = ['==', '!=', '>', '>=', '<'];
-comparisons.forEach((operator, index) => {
-    const left = index + 3;
-    const right = index % 2 === 0 ? left : left + 1;
-    add('logic', `তুলনা ${index + 1}`, `লিখা ${toAssameseDigits(left)} ${operator} ${toAssameseDigits(right)}`);
+// 5. Conditions
+[95, 82, 67, 45, 75].forEach((m, k) => {
+    const g = m >= 90 ? 'এ+' : m >= 75 ? 'এ' : m >= 60 ? 'বি' : 'চি';
+    add('conditions', `গ্ৰেড ${as(k + 1)}`, `পূৰ্ণ নম্বৰ = ${as(m)}\nযদি নম্বৰ >= ৯০ থাকিলে\n    লিখা "এ+"\nনহলে যদি নম্বৰ >= ৭৫ থাকিলে\n    লিখা "এ"\nনহলে যদি নম্বৰ >= ৬০ থাকিলে\n    লিখা "বি"\nনহলে\n    লিখা "চি"\nশেষ`, `${g}\n`);
+});
+[1, 4, 6, 7, 3].forEach((d, k) => {
+    const days = ['', 'দেওবাৰ', 'সোমবাৰ', 'মঙলবাৰ', 'বুধবাৰ', 'বৃহস্পতিবাৰ', 'শুকুৰবাৰ', 'শনিবাৰ'];
+    add('conditions', `বাছক ${as(k + 6)}`,
+        `পূৰ্ণ দিন = ${as(d)}\nবাছক দিন\n${days.slice(1).map((n, i) => `    ক্ষেত্ৰ ${as(i + 1)}\n        লিখা "${n}"`).join('\n')}\n    অন্যথা\n        লিখা "ভুল দিন"\nশেষ`,
+        `${days[d]}\n`);
 });
 
-for (let index = 1; index <= 5; index++) {
-    const number = index % 2 === 0 ? 'সত্য' : 'মিছা';
-    add('logic', `লজিক ${index}`, `বুলিয়ান ঠিক = ${number}\nলিখা নহয় ঠিক\nলিখা ঠিক আৰু সত্য\nলিখা ঠিক বা মিছা`);
-}
+// 6. Loops
+[5, 10, 20, 50, 100].forEach((n, k) => add('loops', `যোগফল ${as(k + 1)}`,
+    `পূৰ্ণ যোগফল = ০\nপূৰ্ণ i = ১\nযেতিয়া i <= ${as(n)}\n    যোগফল += i\n    i++\nশেষ\nলিখা "১ ৰ পৰা ${as(n)} লৈ যোগফল:", যোগফল`,
+    `১ ৰ পৰা ${as(n)} লৈ যোগফল: ${as((n * (n + 1)) / 2)}\n`));
+[[2, 5], [3, 4], [5, 3], [7, 5], [9, 3]].forEach(([t, rows], k) => {
+    let out = '';
+    for (let i = 1; i <= rows; i++) out += `${as(t)} × ${as(i)} = ${as(t * i)}\n`;
+    add('loops', `নামতা ${as(k + 6)}`, `প্ৰতিবাৰ i = ১ লৈকে ${as(rows)}\n    লিখা ${as(t)}, "×", i, "=", ${as(t)} * i\nশেষ`, out);
+});
 
-for (let index = 1; index <= 10; index++) {
-    const limit = index + 5;
-    add('conditions', `শৰ্ত ${index}`, `সংখ্যা নম্বৰ = ${toAssameseDigits(limit)}\nযদি নম্বৰ > ১০ থাকিলে\n    লিখা "ডাঙৰ"\nনহলে\n    লিখা "সৰু"\nশেষ`);
-}
+// 7. Functions
+[5, 6, 7, 10, 12].forEach((n, k) => {
+    let f = 1n; for (let i = 2n; i <= BigInt(n); i++) f *= i;
+    add('functions', `ক্ৰমগুণিতক ${as(k + 1)}`, `কাজ ফেক্ট(পূ৬৪ n) -> পূ৬৪\n    যদি n <= ১ থাকিলে\n        উভতি ১\n    শেষ\n    উভতি n * ফেক্ট(n - ১)\nশেষ\nলিখা "${as(n)}! =", ফেক্ট(${as(n)})`, `${as(n)}! = ${as(f)}\n`);
+});
+[[48, 18], [100, 75], [17, 5], [81, 27], [270, 192]].forEach(([a, b], k) => {
+    const gcd = (x, y) => (y === 0 ? x : gcd(y, x % y));
+    add('functions', `গ.সা.উ. ${as(k + 6)}`, `কাজ গসাউ(পূৰ্ণ a, পূৰ্ণ b) -> পূৰ্ণ\n    যেতিয়া b != ০\n        পূৰ্ণ r = a % b\n        a = b\n        b = r\n    শেষ\n    উভতি a\nশেষ\nলিখা গসাউ(${as(a)}, ${as(b)})`, `${as(gcd(a, b))}\n`);
+});
 
-for (let index = 1; index <= 10; index++) {
-    add('loops', `যেতিয়া ${index}`, `সংখ্যা গণক = ১\nযেতিয়া গণক <= ${toAssameseDigits(index + 2)}\n    লিখা গণক\n    গণক = গণক + ১\nশেষ`);
-}
+// 8. Arrays
+[[4, 8, 15, 16, 23], [3, 1, 4, 1, 5], [10, 20, 30, 40, 50], [9, 7, 5, 3, 1], [2, 7, 1, 8, 2]].forEach((v, k) => {
+    add('arrays', `তালিকা ${as(k + 1)}`, `পূৰ্ণ[] মান = [${v.map(as).join(', ')}]\nপূৰ্ণ মুঠ = ০, ডাঙৰ = মান[০]\nপ্ৰতিবাৰ i = ০ লৈকে দৈৰ্ঘ্য(মান) - ১\n    মুঠ += মান[i]\n    যদি মান[i] > ডাঙৰ থাকিলে\n        ডাঙৰ = মান[i]\n    শেষ\nশেষ\nলিখা মান\nলিখা "মুঠ:", মুঠ, "সৰ্বোচ্চ:", ডাঙৰ`,
+        `[${v.map(as).join(', ')}]\nমুঠ: ${as(v.reduce((a, b) => a + b, 0))} সৰ্বোচ্চ: ${as(Math.max(...v))}\n`);
+});
+[[5, 2, 9, 1, 7], [3, 3, 1, 2, 0], [8, 6, 7, 5, 3], [1, 2, 3, 4, 5], [9, 4, 6, 2, 8]].forEach((v, k) => {
+    const s = [...v].sort((a, b) => a - b);
+    add('arrays', `বাবল ছৰ্ট ${as(k + 6)}`, `পূৰ্ণ[] ক = [${v.map(as).join(', ')}]\nপূৰ্ণ n = দৈৰ্ঘ্য(ক)\nপ্ৰতিবাৰ i = ০ লৈকে n - ২\n    প্ৰতিবাৰ j = ০ লৈকে n - ২ - i\n        যদি ক[j] > ক[j + ১] থাকিলে\n            পূৰ্ণ t = ক[j]\n            ক[j] = ক[j + ১]\n            ক[j + ১] = t\n        শেষ\n    শেষ\nশেষ\nলিখা ক`,
+        `[${s.map(as).join(', ')}]\n`);
+});
 
-for (let index = 1; index <= 10; index++) {
-    add('loops', `প্ৰতিবাৰ ${index}`, `প্ৰতিবাৰ i = ১ লৈকে ${toAssameseDigits(index + 2)}\n    লিখা i\nশেষ`);
-}
+// 9. Pointers and memory
+[[3, 9], [12, 5], [0, 1], [-4, 4], [100, 200]].forEach(([a, b], k) => add('pointers', `সলনি ${as(k + 1)}`,
+    `কাজ সলনি(পূৰ্ণ* ক, পূৰ্ণ* খ)\n    পূৰ্ণ t = *ক\n    *ক = *খ\n    *খ = t\nশেষ\nপূৰ্ণ a = ${as(a)}, b = ${as(b)}\nসলনি(&a, &b)\nলিখা a, b`,
+    `${as(b)} ${as(a)}\n`));
+[3, 5, 8, 10, 4].forEach((n, k) => {
+    const sq = Array.from({ length: n }, (_, i) => i * i);
+    add('pointers', `গতিশীল তালিকা ${as(k + 6)}`, `পূৰ্ণ n = ${as(n)}\nপূৰ্ণ* বৰ্গ = নতুন(পূৰ্ণ, n)\nপ্ৰতিবাৰ i = ০ লৈকে n - ১\n    *(বৰ্গ + i) = i * i\nশেষ\nপূ৬৪ মুঠ = ০\nপ্ৰতিবাৰ i = ০ লৈকে n - ১\n    মুঠ += বৰ্গ[i]\nশেষ\nলিখা "শেষ বৰ্গ:", বৰ্গ[n - ১], "মুঠ:", মুঠ\nমুকলি(বৰ্গ)`,
+        `শেষ বৰ্গ: ${as(sq[n - 1])} মুঠ: ${as(sq.reduce((a, b) => a + b, 0))}\n`);
+});
 
-for (let index = 1; index <= 10; index++) {
-    add('functions', `ফাংচন ${index}`, `কাজ যোগ(সংখ্যা a, সংখ্যা b)\n    উভতি a + b\nশেষ\nলিখা যোগ(${toAssameseDigits(index)}, ${toAssameseDigits(index + 1)})`);
-}
-
-for (let index = 1; index <= 10; index++) {
-    add('arrays', `তালিকা ${index}`, `তালিকা মানসমূহ = [${toAssameseDigits(index)}, ${toAssameseDigits(index + 1)}, ${toAssameseDigits(index + 2)}]\nলিখা মানসমূহ[০]\nলিখা দৈৰ্ঘ্য(মানসমূহ)`);
-}
-
-if (samples.length !== 100) {
-    throw new Error(`Expected 100 samples, created ${samples.length}`);
-}
+// 10. Structs
+[[4, 5], [10, 3], [7, 7], [12, 2], [6, 9]].forEach(([w, h], k) => add('structs', `আয়ত ${as(k + 1)}`,
+    `গঠন আয়ত\n    পূৰ্ণ দীঘ, প্ৰস্থ\nশেষ\nকাজ কালি(আয়ত* ক) -> পূৰ্ণ\n    উভতি ক->দীঘ * ক->প্ৰস্থ\nশেষ\nআয়ত ক = {দীঘ: ${as(w)}, প্ৰস্থ: ${as(h)}}\nলিখা ক, "কালি:", কালি(&ক), "পৰিসীমা:", ২ * (ক.দীঘ + ক.প্ৰস্থ)`,
+    `{দীঘ: ${as(w)}, প্ৰস্থ: ${as(h)}} কালি: ${as(w * h)} পৰিসীমা: ${as(2 * (w + h))}\n`));
+[['ৰিমা', 88, 'ৰাহুল', 72], ['অনু', 64, 'বিজয়', 91], ['মুন', 55, 'জয়', 55], ['দীপ', 99, 'লতা', 98], ['ৰূপ', 70, 'নীলা', 80]].forEach(([n1, m1, n2, m2], k) => {
+    const best = m1 >= m2 ? n1 : n2;
+    add('structs', `ছাত্ৰ ${as(k + 6)}`, `গঠন ছাত্ৰ\n    বাক্য নাম\n    পূৰ্ণ নম্বৰ\nশেষ\nছাত্ৰ[] শ্ৰেণী = [{"${n1}", ${as(m1)}}, {"${n2}", ${as(m2)}}]\nছাত্ৰ শ্ৰেষ্ঠ = শ্ৰেণী[০]\nযদি শ্ৰেণী[১].নম্বৰ > শ্ৰেষ্ঠ.নম্বৰ থাকিলে\n    শ্ৰেষ্ঠ = শ্ৰেণী[১]\nশেষ\nলিখা "শ্ৰেষ্ঠ ছাত্ৰ:", শ্ৰেষ্ঠ.নাম, শ্ৰেষ্ঠ.নম্বৰ`,
+        `শ্ৰেষ্ঠ ছাত্ৰ: ${best} ${as(Math.max(m1, m2))}\n`);
+});
 
 module.exports = samples;
+module.exports.CATEGORIES = CATEGORIES;

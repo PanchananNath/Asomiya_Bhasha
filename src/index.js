@@ -1,68 +1,23 @@
+'use strict';
 /**
- * Main entry point for Asomiya Bhasha
+ * Public JavaScript API for Asomiya Bhasha 2.0.
+ *
+ *   const asomiya = require('asomiya-bhasha');
+ *   const { ok, c, diagnostics } = asomiya.compile('লিখা "নমস্কাৰ"');
+ *   const run = asomiya.run('লিখা ২ + ৩');   // needs cc/gcc/clang
+ *   console.log(run.stdout);                  // "৫\n"
  */
+const { compile, VERSION } = require('./compiler');
+const { buildNative, runNative, findCC, fileLoader } = require('./native');
+const { tokenize } = require('./lexer');
+const { parse } = require('./parser');
 
-const Lexer = require('./lexer');
-const Parser = require('./parser');
-const Interpreter = require('./interpreter');
-
-class AsomiyaBhasha {
-    constructor(options = {}) {
-        this.lexer = null;
-        this.parser = null;
-        this.inputProvider = options.input || null;
-        this.interpreter = new Interpreter(this.inputProvider);
-    }
-
-    run(code) {
-        try {
-            this.interpreter = new Interpreter(this.inputProvider);
-            this.lexer = new Lexer(code);
-            const tokens = this.lexer.tokenize();
-            
-            this.parser = new Parser(tokens);
-            const ast = this.parser.parse();
-            
-            const output = this.interpreter.interpret(ast);
-            
-            return {
-                success: true,
-                output: output,
-                tokens: tokens,
-                ast: ast
-            };
-        } catch (error) {
-            return {
-                success: false,
-                error: error.message,
-                line: error.line || 1
-            };
-        }
-    }
-
-    runFromFile(filename) {
-        const fs = require('fs');
-        const code = fs.readFileSync(filename, 'utf-8');
-        return this.run(code);
-    }
-}
-
-module.exports = AsomiyaBhasha;
-
-if (require.main === module) {
-    const fs = require('fs');
-    const asomiya = new AsomiyaBhasha();
-    
-    if (process.argv[2]) {
-        const result = asomiya.runFromFile(process.argv[2]);
-        if (result.success) {
-            console.log(result.output);
-        } else {
-            console.error('ত্ৰুটি:', result.error);
-            process.exit(1);
-        }
-    } else {
-        console.log('ব্যৱহাৰঃ node src/index.js <ফাইল.asm>');
-        console.log('উদাহৰণঃ node src/index.js examples/hello.asm');
-    }
-}
+module.exports = {
+    VERSION,
+    compile: (source, opts = {}) => compile(source, Object.assign({ loader: fileLoader }, opts)),
+    build: buildNative,
+    run: runNative,
+    findCC,
+    tokenize,
+    parse: (source, file) => parse(tokenize(source, file), file),
+};

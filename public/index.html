@@ -16,22 +16,22 @@
                 <div>
                     <p class="eyebrow">ASOMIYA BHASHA <span>•</span> PLAYGROUND</p>
                     <h1>অসমীয়া প্ৰ'গ্ৰামিং ভাষা</h1>
-                    <p class="subtitle">আপোনাৰ মাতৃভাষাত প্ৰ'গ্ৰামিং শিকা</p>
+                    <p class="subtitle">আপোনাৰ মাতৃভাষাত C-ৰ সমান ক্ষমতাৰে প্ৰ'গ্ৰামিং</p>
                     <p class="developer-credit">Developed by Er Panchanan Nath</p>
                 </div>
             </div>
             <div class="header-status">
                 <span class="status-dot"></span>
-                <span>Prototype v1.0</span>
+                <span>v2.0 · compiler</span>
             </div>
         </header>
 
         <div class="workspace-intro">
             <div>
                 <p class="eyebrow">INTERACTIVE WORKSPACE</p>
-                <h2>Write, run, and learn in one place.</h2>
+                <h2>Write, check, and translate to C.</h2>
             </div>
-            <div class="shortcut-note"><i class="fas fa-keyboard"></i> Ctrl + Enter to run</div>
+            <div class="shortcut-note"><i class="fas fa-keyboard"></i> Ctrl + Enter to translate</div>
         </div>
 
         <div class="main-content">
@@ -40,7 +40,7 @@
                     <div class="panel-title"><span class="panel-kicker">01</span><div><h2><i class="fas fa-edit"></i> কোড লিখক</h2><p>Build your first Assamese program</p></div></div>
                     <div class="editor-buttons">
                         <button id="runBtn" class="btn run-btn">
-                            <i class="fas fa-play"></i> চলাওক
+                            <i class="fas fa-gears"></i> C লৈ ৰূপান্তৰ
                         </button>
                         <button id="typingBtn" class="btn typing-btn" aria-expanded="false" aria-controls="typingPanel">
                             <i class="fas fa-keyboard"></i> অসমীয়া টাইপ
@@ -75,23 +75,24 @@
                         <div>9</div>
                         <div>10</div>
                     </div>
-                    <textarea id="codeInput" spellcheck="false">
-# মোৰ প্ৰথম অসমীয়া প্ৰগ্ৰামৰ উদাহৰণ
-                        
+                    <textarea id="codeInput" spellcheck="false"># মোৰ প্ৰথম অসমীয়া প্ৰ'গ্ৰাম
 লিখা "অসমৰ পৰা সমগ্ৰ বিশ্ববাসীক নমস্কাৰ!"
 
-সংখ্যা x = ১০
-সংখ্যা y = ২০
-সংখ্যা যোগফল = x + y
+পূৰ্ণ x = ১০
+পূৰ্ণ y = ২০
+লিখা "যোগফল:", x + y
 
-লিখা "যোগফল: " + যোগফল
+কাজ বৰ্গ(পূৰ্ণ n) -> পূৰ্ণ
+    উভতি n * n
+শেষ
+লিখা "৭-ৰ বৰ্গ:", বৰ্গ(৭)
 </textarea>
                 </div>
             </div>
 
             <div class="output-section">
                 <div class="output-header">
-                    <div class="panel-title"><span class="panel-kicker">02</span><div><h2><i class="fas fa-terminal"></i> ফলাফল</h2><p>Your program output appears here</p></div></div>
+                    <div class="panel-title"><span class="panel-kicker">02</span><div><h2><i class="fas fa-terminal"></i> ফলাফল</h2><p>Errors or the generated C code appear here</p></div></div>
                     <button id="clearOutputBtn" class="btn clear-output-btn">
                         <i class="fas fa-trash"></i> পৰিষ্কাৰ
                     </button>
@@ -99,7 +100,7 @@
                 <div id="output" class="output-console">
                     <div class="welcome-message">
                         <p>অসমীয়া ভাষালৈ স্বাগতম!</p>
-                        <p>ওপৰৰ কোড সম্পাদনা কৰক আৰু "চলাওক" বুটাম টিপক।</p>
+                        <p>ক'ড লিখি "C লৈ ৰূপান্তৰ" টিপক। native ভাৱে চলাবলৈ: node src/cli.js program.asb</p>
                     </div>
                 </div>
             </div>
@@ -109,28 +110,25 @@
                 <div class="example-cards">
                     <div class="example-card" data-example="hello">
                         <h3>নমস্কাৰ</h3>
-                        <pre><code>লিখা "নমস্কাৰ অসম!"</code></pre>
+                        <pre><code>লিখা "নমস্কাৰ অসম!"
+পূৰ্ণ বছৰ = ২০২৬</code></pre>
                     </div>
-                    <div class="example-card" data-example="math">
-                        <h3>গণনা</h3>
-                        <pre><code>সংখ্যা a = ১৫
-সংখ্যা b = ৩
-লিখা a * b</code></pre>
-                    </div>
-                    <div class="example-card" data-example="loop">
-                        <h3>লুপ</h3>
-                        <pre><code>সংখ্যা i = ১
-যেতিয়া i <= ৫
-    লিখা i
-    i = i + ১
+                    <div class="example-card" data-example="struct">
+                        <h3>গঠন</h3>
+                        <pre><code>গঠন বিন্দু
+    পূৰ্ণ x, y
 শেষ</code></pre>
                     </div>
+                    <div class="example-card" data-example="pointer">
+                        <h3>সূচক</h3>
+                        <pre><code>পূৰ্ণ a = ৩, b = ৭
+সলনি(&amp;a, &amp;b)</code></pre>
+                    </div>
                     <div class="example-card" data-example="function">
-                        <h3>ফাংচন</h3>
-                        <pre><code>কাজ যোগ(a, b)
-    উভতি a + b
-শেষ
-লিখা যোগ(২, ৩)</code></pre>
+                        <h3>কাজ</h3>
+                        <pre><code>কাজ ফেক্ট(পূ৬৪ n) -&gt; পূ৬৪
+    …
+শেষ</code></pre>
                     </div>
                 </div>
             </div>
@@ -139,28 +137,28 @@
                 <div class="section-heading"><div><p class="eyebrow">QUICK REFERENCE</p><h2><i class="fas fa-book-open"></i> সহায়</h2></div><button id="docsLink" class="text-action">সম্পূৰ্ণ docs <i class="fas fa-arrow-up-right-from-square"></i></button></div>
                 <div class="docs-grid">
                     <div class="doc-card">
-                        <h3>মূল সিনটেক্স</h3>
+                        <h3>প্ৰকাৰ আৰু চলক</h3>
                         <ul>
-                            <li><code>লিখা "মজ্জা"</code> - আউটপুট</li>
-                            <li><code>সংখ্যা x = ১০</code> - সংখ্যা চলক</li>
-                            <li><code>বাক্য নাম = "অসম"</code> - স্ট্রিং চলক</li>
-                            <li><code>যদি x > ৫ থাকিলে</code> - যদি বিবৃতি</li>
+                            <li><code>পূৰ্ণ x = ১০</code> - ৩২-বিট পূৰ্ণ সংখ্যা</li>
+                            <li><code>দশমিক d = ২.৫</code> - দশমিক সংখ্যা</li>
+                            <li><code>বাক্য নাম = "অসম"</code> - বাক্য</li>
+                            <li><code>পূৰ্ণ[] ক = [১, ২]</code> - তালিকা</li>
                         </ul>
                     </div>
                     <div class="doc-card">
-                        <h3>অপাৰেটৰসমূহ</h3>
+                        <h3>নিয়ন্ত্ৰণ</h3>
                         <ul>
-                            <li><code>+ - * /</code> - গণনা</li>
-                            <li><code>== != < ></code> - তুলনা</li>
-                            <li><code>আৰু বা নহয়</code> - লজিক</li>
+                            <li><code>যদি x &gt; ৫ থাকিলে … শেষ</code></li>
+                            <li><code>প্ৰতিবাৰ i = ১ লৈকে ১০ … শেষ</code></li>
+                            <li><code>বাছক x … ক্ষেত্ৰ ১ … শেষ</code></li>
                         </ul>
                     </div>
                     <div class="doc-card">
-                        <h3>তালিকা</h3>
+                        <h3>স্মৃতি আৰু সূচক</h3>
                         <ul>
-                            <li><code>তালিকা ল = [১,২,৩]</code></li>
-                            <li><code>ল[০]</code> - ইণ্ডেক্সিং</li>
-                            <li><code>দৈৰ্ঘ্য(ল)</code> - দৈৰ্ঘ্য</li>
+                            <li><code>পূৰ্ণ* p = &amp;x</code> - ঠিকনা</li>
+                            <li><code>নতুন(পূৰ্ণ, n)</code> / <code>মুকলি(p)</code></li>
+                            <li><code>p-&gt;ক্ষেত্ৰ</code>, <code>আকাৰ(T)</code></li>
                         </ul>
                     </div>
                 </div>
@@ -168,14 +166,14 @@
         </div>
 
         <footer>
-            <p>অসমীয়া ভাষা v1.0 | <i class="fas fa-heart"></i> অসমৰ বাবে</p>
+            <p>অসমীয়া ভাষা v2.0 | <i class="fas fa-heart"></i> অসমৰ বাবে</p>
             <p>Developed and open sourced by Er Panchanan Nath | Copyright Er Panchanan Nath</p>
             <p class="footer-links">
-                <a href="#" id="githubLink"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://github.com/PanchananNath/Asomiya_Bhasha" id="githubLink" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>
                 |
                 <a href="#" id="footerDocsLink"><i class="fas fa-file-alt"></i> ডকুমেন্টেচন</a>
                 |
-                <a href="#" id="https://asomiya-bhasha.gitbook.io/asomiya_bhasha-docs"><i class="fas fa-info-circle"></i> আমি সম্পৰ্কে</a>
+                <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i> আমি সম্পৰ্কে</a>
             </p>
         </footer>
     </div>
@@ -184,21 +182,13 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <div class="sample-modal-heading">
-                <div><p class="eyebrow">100 RUNNABLE SAMPLES</p><h3>উদাহৰণ নির্বাচন কৰক</h3></div>
+                <div><p class="eyebrow">100 GRADED SAMPLES</p><h3>উদাহৰণ নির্বাচন কৰক</h3></div>
                 <span id="sampleCount" class="section-count">100 samples</span>
             </div>
             <div class="sample-controls">
                 <input id="sampleSearch" type="search" placeholder="উদাহৰণ বিচাৰক..." aria-label="উদাহৰণ বিচাৰক">
                 <select id="sampleCategory" aria-label="উদাহৰণৰ বিভাগ">
                     <option value="all">সকলো বিভাগ</option>
-                    <option value="printing">প্ৰিণ্ট</option>
-                    <option value="math">গণনা</option>
-                    <option value="variables">চলক</option>
-                    <option value="logic">লজিক</option>
-                    <option value="conditions">শৰ্ত</option>
-                    <option value="loops">লুপ</option>
-                    <option value="functions">ফাংচন</option>
-                    <option value="arrays">তালিকা</option>
                 </select>
             </div>
             <div id="modalExamples" class="modal-examples"></div>

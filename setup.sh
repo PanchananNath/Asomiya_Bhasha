@@ -1,57 +1,40 @@
 #!/bin/bash
-
+# অসমীয়া ভাষা ২.০ — setup script
+set -e
 echo "=========================================="
-echo "অসমীয়া ভাষা - Assamese Programming Language"
+echo " অসমীয়া ভাষা ২.০ — Asomiya Bhasha compiler"
 echo "=========================================="
-echo ""
 
-# Check if Node.js is installed
-if ! command -v node &> /dev/null; then
-    echo "Node.js is not installed!"
-    echo "Please install Node.js 14+ from: https://nodejs.org"
+if ! command -v node >/dev/null 2>&1; then
+    echo "✗ Node.js পোৱা নগ'ল। Node.js 16 বা তাতকৈ নতুন ইনষ্টল কৰক: https://nodejs.org"
     exit 1
 fi
+echo "✓ Node.js: $(node --version)"
 
-echo "Node.js found: $(node --version)"
+CC_FOUND=""
+for c in "${CC:-}" cc gcc clang; do
+    if [ -n "$c" ] && command -v "$c" >/dev/null 2>&1; then CC_FOUND="$c"; break; fi
+done
+if [ -z "$CC_FOUND" ]; then
+    echo "✗ C কম্পাইলাৰ (gcc বা clang) পোৱা নগ'ল।"
+    echo "  Ubuntu/Debian: sudo apt install build-essential"
+    echo "  macOS:         xcode-select --install"
+    echo "  Windows:       MSYS2 বা WSL-ত gcc ইনষ্টল কৰক"
+    exit 1
+fi
+echo "✓ C compiler: $CC_FOUND"
 
-# Install dependencies
-echo ""
-echo "Installing dependencies..."
 npm install
-
-# Make CLI executable
 chmod +x src/cli.js
-
-# Create examples directory if it doesn't exist
-mkdir -p examples
-
-# Test the installation
-echo ""
-echo "Running tests..."
 npm test
 
-# Ask about global installation
-echo ""
-read -p "Do you want to install globally? (y/n): " -n 1 -r
+read -p "সকলো ঠাইৰ পৰা 'asomiya' command ব্যৱহাৰ কৰিবলৈ global install কৰিব নেকি? (y/n): " -n 1 -r
 echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    npm link
-    echo ""
-    echo "Installed globally! You can now use 'asomiya' command anywhere."
-fi
+if [[ $REPLY =~ ^[Yy]$ ]]; then npm link; fi
 
 echo ""
-echo "Setup complete!"
-echo ""
-echo "Quick Start:"
-echo "-----------"
-echo "1. Run a program:   node src/cli.js examples/hello.asm"
-echo "2. Start REPL:      node src/cli.js --repl"
-echo "3. Run tests:       npm test"
-echo "4. Web interface:   npm run web (then open http://localhost:8080)"
-echo ""
-echo "If installed globally:"
-echo "1. Run a program:   asomiya examples/hello.asm"
-echo "2. Start REPL:      asomiya --repl"
-echo ""
-echo "Happy coding! অসমীয়াত প্ৰ'গ্ৰামিং কৰাৰ আনন্দ লওঁক!"
+echo "আৰম্ভ কৰক:"
+echo "  node src/cli.js examples/hello.asb           # compile কৰি চলোৱা"
+echo "  node src/cli.js build examples/hello.asb     # native executable"
+echo "  node src/cli.js c examples/hello.asb         # তৈয়াৰ হোৱা C ক'ড চোৱা"
+echo "  npm run web                                  # playground (http://localhost:8080)"
