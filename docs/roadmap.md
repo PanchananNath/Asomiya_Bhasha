@@ -5,15 +5,17 @@ Asomiya Bhasha is being built in three compiler stages. Each stage keeps the sam
 | Stage | Back end | Status | What it adds |
 | --- | --- | --- | --- |
 | 1 | C11 → gcc / clang | **done (v2.0)** | Native executables, C-level language, full C library access |
-| 2 | LLVM IR | planned | Direct LLVM code generation, DWARF debug info, WebAssembly target so the playground can run programs in the browser |
-| 3 | MLIR dialect | planned | An `asomiya` MLIR dialect lowered through `scf`/`arith`/`memref`/`func` to LLVM; a platform for language-level analysis and optimisation research |
+| 2 | LLVM IR, WebAssembly | **done (v2.1)** | Direct LLVM code generation with DWARF debug info; a WebAssembly back end so programs run in the browser playground and in plain Node.js |
+| 3 | MLIR dialect | next | An `asomiya` MLIR dialect lowered through `scf`/`arith`/`memref`/`func` to LLVM; a platform for language-level analysis and optimisation research |
 
-## Stage 2 — LLVM IR back end
+## Stage 2 — what was built (v2.1)
 
-1. Lower the checked AST to LLVM IR text (`.ll`) with one function per Asomiya function; locals as `alloca`, structs as named LLVM struct types, `লিখা` as calls into a small runtime compiled once from `src/runtime.js`.
-2. Emit DWARF line information from AST positions, so gdb and lldb show Assamese source lines.
-3. Add `--target wasm32-wasi` and ship a prebuilt WebAssembly runtime; the playground then compiles to Wasm in a worker and runs programs in the browser.
-4. Compare speed against Stage 1 (`clang -O2` on the generated C) on the 100 samples and a benchmark set.
+1. `src/codegen_llvm.js` lowers the checked AST to textual LLVM IR: locals as `alloca`, structures as named LLVM types, unions laid out like C, `লিখা` as calls into the runtime, which is compiled from C and linked. `--backend llvm` builds through `clang -c` and the C compiler's linker, using the C compiler's target triple (so MinGW works on Windows).
+2. `-g` emits DWARF from AST positions: gdb and lldb stop at `.asb` lines, show Assamese function and variable names, and print structures with their fields.
+3. `src/codegen_wasm.js` writes WebAssembly binaries directly (no Emscripten or WASI SDK), with a JavaScript host (`src/wasm_host.js`) for printing, input, the heap, a C library subset and files. The playground compiles to WebAssembly and runs programs in a Web Worker with a time limit; Node.js runs them with `--backend wasm`.
+4. All 193 checks pass on all three back ends (Linux gcc/clang, Windows MinGW-w64). On a small benchmark (recursive Fibonacci of 32 plus 20 million array updates) every back end finishes in well under a second including compilation; WebAssembly is quickest end-to-end because it starts no C compiler.
+
+Still open from Stage 2: an optional `--safe` mode for the native back ends (bounds and null checks like the WebAssembly target already has for null pointers), and a WASI build so `.wasm` files run in wasmtime/wasmer as well.
 
 ## Stage 3 — MLIR dialect
 

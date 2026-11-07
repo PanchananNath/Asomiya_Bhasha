@@ -4,6 +4,8 @@
  *   node tests/test.js              (uses cc / gcc / clang)
  *   node tests/test.js --cc clang   (pick the C compiler)
  *   node tests/test.js --quick      (skip the 100-sample sweep)
+ *   node tests/test.js --backend llvm   (LLVM IR back end, needs clang)
+ *   node tests/test.js --backend wasm   (WebAssembly back end, runs in Node)
  *
  * Every program is compiled to C, built with the system C compiler and
  * run; the test compares the exact standard output.
@@ -17,6 +19,8 @@ const catalog = require('../examples/catalog');
 const argv = process.argv.slice(2);
 const ccArg = argv.includes('--cc') ? argv[argv.indexOf('--cc') + 1] : process.env.TEST_CC;
 const quick = argv.includes('--quick');
+const backend = argv.includes('--backend') ? argv[argv.indexOf('--backend') + 1] : (process.env.TEST_BACKEND || 'c');
+const { findClang, noClangMessage, ccTriple } = require('../src/native');
 const cc = findCC(ccArg);
 const ROOT = path.join(__dirname, '..');
 
@@ -29,7 +33,8 @@ function record(name, ok, detail) {
 }
 
 function runProgram(name, code, expected, opts = {}) {
-    const r = runNative(code, Object.assign({ file: opts.file || `${name}.asb`, opt: 0, cc: cc, input: opts.input || '', args: opts.args, timeout: 20000 }, opts));
+    const runner = backend === 'wasm' ? require('../src/wasm_run').runWasm : runNative;
+    const r = runner(code, Object.assign({ file: opts.file || `${name}.asb`, opt: 0, cc: cc, backend, input: opts.input || '', args: opts.args, timeout: 20000 }, opts));
     if (!r.ok) return record(name, false, (r.diagnostics ? r.diagnostics.formatAll() : '') + (r.ccError || ''));
     const stdout = String(r.stdout || '').replace(/\r\n/g, '\n'); // Windows text-mode stdout writes \r\n
     const ok = stdout === expected && (opts.status === undefined || r.status === opts.status);
@@ -143,11 +148,19 @@ const WARNINGS = [
 // ---------------------------------------------------------------------------
 console.log('অসমীয়া ভাষা পৰীক্ষা (Asomiya Bhasha tests)');
 console.log('======================================');
-if (!cc) {
+if (!cc && backend !== 'wasm') {
     console.log('✗ ' + noCCMessage());
     process.exit(1);
 }
-console.log(`C compiler: ${cc}\n`);
+if (backend === 'llvm') {
+    const clang = findClang(null, ccTriple(cc));
+    if (!clang) { console.log('✗ ' + noClangMessage()); process.exit(1); }
+    console.log(`Back end: LLVM IR (${clang}), linker: ${cc}\n`);
+} else if (backend === 'wasm') {
+    console.log('Back end: WebAssembly (Node.js host)\n');
+} else {
+    console.log(`Back end: C, compiler: ${cc}\n`);
+}
 
 const t0 = Date.now();
 for (const [name, code, out, opts] of UNITS) runProgram(`ভাষা: ${name}`, code, out, opts);

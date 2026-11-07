@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.1.0 — LLVM and WebAssembly back ends (Stage 2)
+
+### Added
+- **LLVM IR back end** (`--backend llvm`, `asomiya ll`): textual LLVM IR with opaque pointers, linked with the C runtime; works with the C compiler's target, including MinGW on Windows.
+- **DWARF debug information** with `--backend llvm -g`: breakpoints by Assamese function name or `file.asb:line`, stepping through the source, variables, structures, unions, enums and arrays shown with their Assamese names in gdb and lldb.
+- **WebAssembly back end** (`--backend wasm`, `asomiya wasm`): the compiler writes `.wasm` binaries itself; a JavaScript host provides printing, input, the heap, files and a C library subset (printf family, strings, ctype, math, qsort, glibc-compatible rand).
+- The **playground runs programs**: ▶ চলাওক compiles to WebAssembly and runs in a Web Worker with an input box, a stop button and a 10-second limit; C and LLVM IR views; samples are checked against their expected output.
+- WebAssembly run-time errors in Assamese: null pointer use, division by zero, endless recursion (stack exhausted), double `মুকলি`, calling a `খালি` function pointer.
+- Tests: `npm run test:llvm`, `npm run test:wasm`, `npm run test:all`; `--clang` option; `--version` lists all back ends.
+- JavaScript API: `compile(src, { backend: 'llvm' | 'wasm' })`, `run(src, { backend: 'wasm' })`, `runWasmFile(path)`.
+
+### Changed
+- `docs/spec.md` §10 now describes all three back ends; §7.8 notes that `আকাৰ` follows the target (pointers are 4 bytes on WebAssembly).
+- The stray `install_asomiya_v2.sh` and `list.exe` were removed from the repository.
+
+
 ## 2.0.1 — Windows support
 
 ### Fixed

@@ -703,3 +703,22 @@ footer { margin-top: 28px; padding: 8px; color: var(--muted); font-size: .78rem;
 .output-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .small-btn { padding: 6px 12px; font-size: .78rem; background: #25434a; color: #d9eee5; }
 .small-btn:hover { background: #2f5860; }
+
+/* v2.1 — running programs in the browser */
+.code-btn { background: #e5f1ec; color: var(--teal-dark); }
+.code-btn:hover { background: #d3e8df; transform: none; }
+.run-btn[disabled] { opacity: .65; cursor: progress; }
+.output-buttons { display: flex; gap: 7px; }
+.stop-btn { background: #f8e7e2; color: #b34f3c; }
+.stop-btn[hidden] { display: none; }
+.stdin-box { margin: 0 0 12px; border: 1px solid var(--line); border-radius: 10px; background: #f8faf7; }
+.stdin-box summary { padding: 9px 12px; cursor: pointer; color: var(--teal-dark); font-size: .8rem; font-weight: 700; }
+.stdin-box summary span { color: var(--coral); font-weight: 600; }
+.stdin-box textarea { display: block; width: calc(100% - 24px); margin: 0 12px 12px; padding: 9px 10px; border: 1px solid #cbd9d2; border-radius: 7px; background: white; color: var(--ink); font: .86rem/1.5 'Noto Sans Assamese', 'Courier New', monospace; resize: vertical; }
+.output-console pre.program-output { min-height: 2.5em; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,.04); color: #eef8f3; font-family: 'Noto Sans Assamese', 'Courier New', monospace; font-size: .9rem; }
+.output-console pre.program-output .stderr { color: #fbb6b6; }
+.output-console .run-status { margin-top: 10px; color: #8da6a0; font-size: .78rem; }
+.output-console .run-status.ok { color: #68d391; }
+.output-console .run-status.bad { color: #fbb6b6; }
+.output-console .match { display: inline-block; margin-top: 8px; padding: 3px 9px; border-radius: 999px; background: rgba(104,211,145,.15); color: #9ae6b4; font-size: .76rem; }
+.output-console .match.miss { background: rgba(246,224,94,.12); color: #f6e05e; }

@@ -110,3 +110,39 @@ function name(t) {
 }
 
 module.exports = { T, PRIM, ptr, arr, fn, eq, isErr, isInt, isFloat, isArith, isPtr, isScalar, isStr, isFnPtr, decay, promote, unify, intRange, name };
+
+/**
+ * C-compatible memory layout. `ptrSize` is 8 for native 64-bit targets and
+ * 4 for wasm32. Returns { size, align } and, for structs/unions, `offsets`.
+ */
+function layout(t, ptrSize = 8, cache = new Map()) {
+    const key = t;
+    if (cache.has(key)) return cache.get(key);
+    let r;
+    switch (t.k) {
+        case 'int': r = { size: t.bits / 8, align: t.bits / 8 }; break;
+        case 'enum': r = { size: 4, align: 4 }; break;
+        case 'float': r = { size: t.bits / 8, align: t.bits / 8 }; break;
+        case 'bool': case 'char': r = { size: 1, align: 1 }; break;
+        case 'ptr': case 'null': case 'fn': r = { size: ptrSize, align: ptrSize }; break;
+        case 'arr': { const e = layout(t.of, ptrSize, cache); r = { size: e.size * t.n, align: e.align }; break; }
+        case 'struct': {
+            let size = 0, align = 1;
+            const offsets = [];
+            for (const f of t.fields || []) {
+                const l = layout(f.type, ptrSize, cache);
+                align = Math.max(align, l.align);
+                if (t.union) { offsets.push(0); size = Math.max(size, l.size); }
+                else { size = Math.ceil(size / l.align) * l.align; offsets.push(size); size += l.size; }
+            }
+            size = Math.ceil(size / align) * align || align;
+            r = { size, align, offsets };
+            break;
+        }
+        case 'opaque': r = { size: 1, align: 1 }; break;
+        default: r = { size: 0, align: 1 };
+    }
+    cache.set(key, r);
+    return r;
+}
+module.exports.layout = layout;

@@ -22,16 +22,16 @@
             </div>
             <div class="header-status">
                 <span class="status-dot"></span>
-                <span>v2.0 · compiler</span>
+                <span>v2.1 · C · LLVM · WebAssembly</span>
             </div>
         </header>
 
         <div class="workspace-intro">
             <div>
                 <p class="eyebrow">INTERACTIVE WORKSPACE</p>
-                <h2>Write, check, and translate to C.</h2>
+                <h2>Write, run in your browser, and see the C or LLVM code.</h2>
             </div>
-            <div class="shortcut-note"><i class="fas fa-keyboard"></i> Ctrl + Enter to translate</div>
+            <div class="shortcut-note"><i class="fas fa-keyboard"></i> Ctrl + Enter to run</div>
         </div>
 
         <div class="main-content">
@@ -39,8 +39,14 @@
                 <div class="editor-header">
                     <div class="panel-title"><span class="panel-kicker">01</span><div><h2><i class="fas fa-edit"></i> কোড লিখক</h2><p>Build your first Assamese program</p></div></div>
                     <div class="editor-buttons">
-                        <button id="runBtn" class="btn run-btn">
-                            <i class="fas fa-gears"></i> C লৈ ৰূপান্তৰ
+                        <button id="runBtn" class="btn run-btn" title="WebAssembly হিচাপে browser-তে চলাওক (Ctrl + Enter)">
+                            <i class="fas fa-play"></i> চলাওক
+                        </button>
+                        <button id="cBtn" class="btn code-btn" title="তৈয়াৰ হোৱা C11 ক'ড চাওক">
+                            <i class="fas fa-gears"></i> C
+                        </button>
+                        <button id="llBtn" class="btn code-btn" title="তৈয়াৰ হোৱা LLVM IR চাওক">
+                            <i class="fas fa-microchip"></i> LLVM IR
                         </button>
                         <button id="typingBtn" class="btn typing-btn" aria-expanded="false" aria-controls="typingPanel">
                             <i class="fas fa-keyboard"></i> অসমীয়া টাইপ
@@ -92,15 +98,25 @@
 
             <div class="output-section">
                 <div class="output-header">
-                    <div class="panel-title"><span class="panel-kicker">02</span><div><h2><i class="fas fa-terminal"></i> ফলাফল</h2><p>Errors or the generated C code appear here</p></div></div>
-                    <button id="clearOutputBtn" class="btn clear-output-btn">
-                        <i class="fas fa-trash"></i> পৰিষ্কাৰ
-                    </button>
+                    <div class="panel-title"><span class="panel-kicker">02</span><div><h2><i class="fas fa-terminal"></i> ফলাফল</h2><p>Program output, errors, C or LLVM IR</p></div></div>
+                    <div class="output-buttons">
+                        <button id="stopBtn" class="btn stop-btn" hidden>
+                            <i class="fas fa-stop"></i> ৰখাওক
+                        </button>
+                        <button id="clearOutputBtn" class="btn clear-output-btn">
+                            <i class="fas fa-trash"></i> পৰিষ্কাৰ
+                        </button>
+                    </div>
                 </div>
+                <details class="stdin-box">
+                    <summary><i class="fas fa-keyboard"></i> ইনপুট — পঢ়া(), পঢ়া_পূৰ্ণ()-ৰ বাবে <span id="stdinHint"></span></summary>
+                    <textarea id="stdinInput" rows="3" spellcheck="false" placeholder="প্ৰতি শাৰীত এটা মান, যেনে:&#10;ৰহিম&#10;২৫"></textarea>
+                </details>
                 <div id="output" class="output-console">
                     <div class="welcome-message">
                         <p>অসমীয়া ভাষালৈ স্বাগতম!</p>
-                        <p>ক'ড লিখি "C লৈ ৰূপান্তৰ" টিপক। native ভাৱে চলাবলৈ: node src/cli.js program.asb</p>
+                        <p>ক'ড লিখি ▶ চলাওক টিপক — প্ৰ'গ্ৰামটো WebAssembly হিচাপে আপোনাৰ browser-তে চলিব।</p>
+                        <p>নিজৰ কম্পিউটাৰত native ভাৱে: node src/cli.js program.asb</p>
                     </div>
                 </div>
             </div>
@@ -166,7 +182,7 @@
         </div>
 
         <footer>
-            <p>অসমীয়া ভাষা v2.0 | <i class="fas fa-heart"></i> অসমৰ বাবে</p>
+            <p>অসমীয়া ভাষা v2.1 | <i class="fas fa-heart"></i> অসমৰ বাবে</p>
             <p>Developed and open sourced by Er Panchanan Nath | Copyright Er Panchanan Nath</p>
             <p class="footer-links">
                 <a href="https://github.com/PanchananNath/Asomiya_Bhasha" id="githubLink" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>
